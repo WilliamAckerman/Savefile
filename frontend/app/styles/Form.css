@@ -1,0 +1,44 @@
+@import "tailwindcss";
+@tailwindcss components;
+
+@layer components {
+    .form {
+        @apply bg-neutral-50 text-black rounded-sm shadow-sm p-4 m-4;
+    }
+
+    .form-header {
+        @apply text-xl sm:text-2xl md:text-3xl lg:text-4xl font-semibold mb-4;
+    }
+
+    .form-sub-header {
+        @apply text-lg sm:text-xl md:text-2xl lg:text-3xl mb-2;
+    }
+
+    .form-group {
+        @apply mb-4;
+
+        & label {
+            @apply mb-4;
+        }
+    }
+
+    .form-field {
+        @apply block border border-solid rounded-sm w-full p-2;
+    }
+
+    .form-submit-btn {
+        @apply bg-violet-500 text-white p-2 rounded-sm cursor-pointer;
+    }
+
+    .form-submit-btn:active, .form-submit-btn:hover {
+        @apply bg-violet-600;
+    }
+
+    .form-select {
+        @apply block border border-solid rounded-sm mb-4 w-full p-2;
+    }
+
+    .required {
+        @apply text-red-500;
+    }
+}

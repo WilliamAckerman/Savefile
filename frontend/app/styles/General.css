@@ -1,0 +1,24 @@
+@import "tailwindcss";
+@tailwindcss components;
+
+@layer components {
+    .main-header {
+        @apply text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold mb-4;
+    }
+
+    .secondary-header {
+        @apply text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-semibold mb-2;
+    }
+
+    .text-box {
+        @apply rounded-sm shadow-sm p-4;
+    }
+
+    .link {
+        @apply text-blue-600 underline;
+    }
+
+    .link:hover {
+        @apply text-blue-700 no-underline;
+    }
+}

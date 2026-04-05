@@ -1,0 +1,51 @@
+name: Jest Tests
+on:
+    push:
+        branches: [ main, master ]
+    pull_request:
+        branches: [ main, master ]
+
+defaults:
+    run:
+        working-directory: ./frontend
+
+jobs:
+    jest:
+        name: Jest Unit and Component Testing
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                node-version: [20]
+        steps:
+            - uses: actions/checkout@v5
+
+            - name: Install pnpm
+              uses: pnpm/action-setup@v4
+              with:
+                version: 10
+
+            - name: Use Node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v6
+              with:
+                node-version: ${{ matrix.node-version }}
+                cache: "pnpm"
+                cache-dependency-path: ./frontend/pnpm-lock.yaml
+
+            - name: Install pnpm dependencies
+              run: pnpm install
+
+            - name: Create build
+              run: pnpm run build
+
+            - name: Install frozen lockfile
+              run: pnpm i --frozen-lockfile
+
+            - name: Run Component and Unit Tests
+              run: pnpm run test
+
+            - uses: actions/upload-artifact@v5
+              if: ${{ !cancelled() }}
+              with:
+                name: coverage
+                path: frontend/coverage
+                retention-days: 30

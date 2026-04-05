@@ -1,0 +1,20 @@
+@import "tailwindcss";
+@tailwindcss components;
+
+@layer components {
+    .gameGrid {
+        @apply grid grid-cols-2 lg:grid-cols-4 gap-4 mx-auto p-4;
+    }
+
+    .searchGrid {
+        @apply h-[45vh] lg:h-[95vh] overflow-y-auto;
+    }
+
+    .displayGame {
+        @apply max-w-[200px] p-4 mx-auto lg:m-0;
+
+        & div {
+            @apply transition delay-150 duration-300 ease-in-out hover:scale-110 hover:cursor-pointer;
+        }
+    }
+}

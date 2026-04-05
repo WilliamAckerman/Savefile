@@ -1,0 +1,32 @@
+@import "tailwindcss";
+@tailwindcss components;
+
+@layer components {
+    .gameSectionBg {
+        @apply lg:w-[80vw] flex items-center justify-between bg-cover /*h-auto lg:h-[100vh]*/ /*min-*/h-[100vh] /*h-auto*/ w-full bg-black;
+
+        /*@apply flex flex-col bg-cover w-full bg-black;*/
+
+        & section {
+            @apply flex items-center justify-center h-[100vh];
+        }
+    }
+
+    .gameSectionBox {
+        @apply bg-slate-900 flex justify-evenly mx-auto mt-4 mb-4 lg:mt-0 lg:mb-0 p-4 rounded-sm shadow-sm max-w-[90%] min-w-[90%] text-neutral-50 h-auto sm:max-h-[75%] sm:min-h-[75%] lg:max-h-[90%] lg:min-h-[90%] overflow-y-auto;
+    }
+
+    .shadCdnTabList {
+        @apply overflow-y-auto lg:h-[100vh] lg:w-[20vw];
+    }
+
+    .shadCdnTab {
+        @apply block text-neutral-50 hover:bg-violet-600 cursor-pointer w-full border-solid border-white border p-1;
+    }
+
+    @media (width < 768px) {
+        .shadCdnTabList {
+            @apply max-h-[20vh] overflow-y-auto border-b-4 border-black border-solid;
+        }
+    }
+}

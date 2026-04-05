@@ -1,0 +1,8 @@
+frontend/.swc
+
+backend/node_modules
+backend/.env
+backend/dist
+
+python_scripts/venv
+python_scripts/.env

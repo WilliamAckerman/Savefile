@@ -1,0 +1,16 @@
+Backend:
+- https://www.w3schools.com/typescript/typescript_nodejs.php
+- https://www.mongodb.com/resources/products/compatibilities/using-typescript-with-mongodb-tutorial#adding-schema-validation-with-the-mongodb-nodejs-driver
+- MongoDB Search Indexes: https://www.youtube.com/watch?v=o2ss2LJNZVE
+- MongoDB Pagination with Aggregation: https://codebeyondlimits.com/articles/pagination-in-mongodb-the-only-right-way-to-implement-it-and-avoid-common-mistakes
+
+Frontend:
+- https://stackoverflow.com/questions/79124951/type-error-in-next-js-route-type-params-id-string-does-not-satis
+- Next.js Forms: https://www.youtube.com/watch?v=DK7WqcL9Qq4
+- https://www.reddit.com/r/nextjs/comments/1ig6a9f/error_the_default_export_is_not_a_react_component/
+
+Python:
+- https://stackoverflow.com/questions/26895213/pymongo-using-exists
+
+CI/CD:
+- Playwright: https://www.roybakker.dev/blog/playwright-in-ci-with-github-actions-and-docker-endtoend-guide
