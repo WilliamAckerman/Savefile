@@ -5,3 +5,6 @@ SaveFile is a web application that allows users to view information on video gam
 The IGDB API is used in developing this project.
 
 Please support IGDB by checking out their website here: https://www.igdb.com/.
+
+# Privacy Policy
+Effective Date: April 22, 2026

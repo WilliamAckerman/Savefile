@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, forwardRef, useImperativeHandle } from 'react';
-import 'altcha';
+//import 'altcha';
 
 interface AltchaProps {
     onStateChange?: (ev: Event | CustomEvent) => void;
@@ -18,6 +18,8 @@ const Altcha = forwardRef<{ value: string | null }, AltchaProps>(({ onStateChang
     }, [value])
 
     useEffect(() => {
+        import('altcha')
+
         const handleStateChange = (ev: Event | CustomEvent) => {
             if ('detail' in ev) {
                 setValue(ev.detail.payload || null)
@@ -39,7 +41,7 @@ const Altcha = forwardRef<{ value: string | null }, AltchaProps>(({ onStateChang
             style={{
                 '--altcha-max-width': '100%',
             }}
-            challengeurl={`${process.env.BACKEND_URL}/altcha-challenge`}
+            challengeurl={`${process.env.NEXT_PUBLIC_BACKEND_URL}/altcha_challenge`}
         ></altcha-widget>
     )
 })

@@ -12,7 +12,10 @@ altchaChallengeRouter.get('/', async (_req: Request, res: Response) => {
             success: false,
             error: 'Failed to execute Altcha challenge.'
         })*/
-       return res.status(500).send('Failed to execute Altcha challenge.');
+       //return res.status(500).send('Failed to execute Altcha challenge.');
+        return res.status(500).json({
+            'error': 'Failed to execute Altcha challenge.'
+        })
     }
 
     const HMAC_KEY = process.env.ALTCHA_HMAC_KEY!
@@ -23,9 +26,10 @@ altchaChallengeRouter.get('/', async (_req: Request, res: Response) => {
             maxNumber: 100000
         })
 
-        return res.status(200).json({
+        /*return res.status(200).json({
             challenge: challenge
-        })
+        })*/
+        return res.status(200).json(challenge);
     } catch (error) {
         return res.status(500).json({
             success: false,

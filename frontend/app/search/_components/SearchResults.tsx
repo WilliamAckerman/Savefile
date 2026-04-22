@@ -59,7 +59,7 @@ async function SearchResults(props) {
 
     const gameData = props.games;
 
-    console.log(gameData)
+    //console.log(gameData)
     const games: Addon[] = gameData.games ? gameData.games : [];
     const gameCount = gameData.gameCount;
     const pageCount = gameData.pageCount;

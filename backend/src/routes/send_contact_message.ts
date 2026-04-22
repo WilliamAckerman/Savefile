@@ -49,7 +49,9 @@ sendContactMessageRouter.post('/', jsonParser, async (_req: Request, res: Respon
         })
     }
 
-    /*if (process.env.ALTCHA_HMAC_KEY == undefined) {
+    if (process.env.ALTCHA_HMAC_KEY == undefined) {
+        //console.log("Failed to execute Altcha functionality")
+
         res.status(500).json({
             success: false,
             error: 'Failed to execute Altcha functionality.'
@@ -61,12 +63,14 @@ sendContactMessageRouter.post('/', jsonParser, async (_req: Request, res: Respon
         process.env.ALTCHA_HMAC_KEY!
     )
 
+    //console.log(`OK: ${ok}`)
+
     if (!ok) {
         res.json({
             success: false,
             'error': 'Altcha challenge failed.'
         })
-    }*/
+    }
 
     try {
         const info = await transporter.sendMail({

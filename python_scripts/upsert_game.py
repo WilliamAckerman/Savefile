@@ -30,7 +30,7 @@ request_timeout = (int(600), int(600))
 database = client.get_database(DATABASE) # Select the MongoDB database to use
 games = database.get_collection(GAMES_COLLECTION) # Select the database collection
 
-game_ids = [
+"""game_ids = [
     #int(26602),
     #int(171233),
     #int(17000),
@@ -57,9 +57,18 @@ game_ids = [
     #int(284716),
     #int(264410),
     #int(251833),
-    int(15890),
-    int(31463)
-]
+
+    #int(15890),
+    #int(31463)
+
+    #int(396383),
+    #int(194143),
+    #int(113360)
+
+    int(393025)
+]"""
+
+game_ids = []
 
 async def get_popular_games(popularity_type):
     game_id_array = []
@@ -304,11 +313,17 @@ async def append_add_on(IGDB_id):
                     f'where id={IGDB_id};'
             }
         )
+        time.sleep(0.251)
 
-        if (len(igdb_api_response.json()) < 1):
+        if ((len(igdb_api_response.json())) > 0):
+            IGDB_game_data = igdb_api_response.json()[0]
+        else:
+            return None
+
+        """if (len(igdb_api_response.json()) < 1):
             return None
         
-        IGDB_game_data = igdb_api_response.json()[0]
+        IGDB_game_data = igdb_api_response.json()[0]"""
     
     except Exception as e:
         raise Exception(f"IGDB API error getting add-on data: {e}")
@@ -1439,6 +1454,12 @@ async def upsert_game(IGDB_game_id):
         #add_key_basic(IGDB_game_data, 'expanded_games', "Expanded Games", IGDB_game_id, game_object, "expanded_games")
         #game_object['expanded_games'] = await assign_addons("Expanded Games", "expanded_games", IGDB_game_data)
         await assign_addons("Expanded Games", "expanded_games", IGDB_game_data, game_object)
+
+        # Remasters
+        await assign_addons("Remasters", "remasters", IGDB_game_data, game_object)
+
+        # Remakes
+        await assign_addons("Remakes", "remakes", IGDB_game_data, game_object)
 
         # MongoDB Operation
         create_header("MongoDB Operation")

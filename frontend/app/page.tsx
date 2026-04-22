@@ -31,14 +31,14 @@ export default function Home() {
             <h2 className={`mb-8 text-center ${h2}`}>
               Max out your experience.
             </h2>
-            <div className="flex items-center justify-evenly flex-col lg:flex-row mb-4">
+            {/*<div className="flex items-center justify-evenly flex-col lg:flex-row mb-4">
               <button className={`${button} md:w-[30%] mb-4 lg:mb-0 lg:mr-2`}>
                 Log In
               </button>
               <button className={`${button} md:w-[30%] lg:ml-2`}>
                 Sign Up
               </button>
-            </div>
+            </div>*/}
 
             <div className="flex items-center justify-evenly mt-8">
               <Link href="/search" className={`${button} md:w-[60%]`}>

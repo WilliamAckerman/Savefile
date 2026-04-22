@@ -3,7 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 async function GameAddOns(
-    props
+    props,
     { params }: { params: Promise<{ IGDB_id: string }> }
 ) {
     //const IGDB_id = props.IGDB_id;

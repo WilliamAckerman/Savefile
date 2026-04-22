@@ -59,7 +59,7 @@ getGameAddOnsRouter.post('/', jsonParser, async (req: Request, res: Response) =>
             games: games
         });
     } catch (error) {
-        console.error(error);
+        //console.error(error);
         res.status(500).json({
             success: false,
             error: error

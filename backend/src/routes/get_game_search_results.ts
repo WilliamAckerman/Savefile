@@ -25,7 +25,7 @@ function appendToArray(array: number[], field: boolean, id: number) {
 }
 
 getGameSearchResultsRouter.get('/', async (_req: Request, res: Response) => {
-    console.log(_req.query);
+    //console.log(_req.query);
 
     const search: string = _req.query.search ? String(_req.query.search) : "";
     const page = Number(_req.query.page) || 1;
@@ -103,8 +103,8 @@ getGameSearchResultsRouter.get('/', async (_req: Request, res: Response) => {
     appendToArray(gameTypes, expansion, 2);
     appendToArray(gameTypes, standalone_expansion, 4);
 
-    console.log("Game types")
-    console.log(gameTypes)
+    //console.log("Game types")
+    //console.log(gameTypes)
 
     if (gameTypes.length > 0) {
         typeFilterArray.push({ 'game_type.IGDB_game_type_id': { $in: gameTypes }});
@@ -213,13 +213,13 @@ getGameSearchResultsRouter.get('/', async (_req: Request, res: Response) => {
 
     // $and is only applied if filtering by two
     if (findArray.length > 1) {
-        console.log("findArray length > 1")
-        console.log(findArray)
+        //console.log("findArray length > 1")
+        //console.log(findArray)
         queryObject = { "$and": findArray };
         //queryObject = {}
     } else if (findArray.length == 1) {
-        console.log("findArray length = 1")
-        console.log(findArray[0])
+        //console.log("findArray length = 1")
+        //console.log(findArray[0])
         queryObject = findArray[0];
         //queryObject = {}
     } else {
@@ -287,15 +287,15 @@ getGameSearchResultsRouter.get('/', async (_req: Request, res: Response) => {
         }
     })
 
-    console.log(pipeline)
-    console.log(JSON.stringify(pipeline))
+    //console.log(pipeline)
+    //console.log(JSON.stringify(pipeline))
 
     try {
         const gamesCollection = db.collection(process.env.MONGODB_GAME_COLLECTION_NAME!)
 
         let games; // Stores the games returned
         let gameCount;
-        console.log(search)
+        //console.log(search)
 
         /*if (search.trim() == "") {
             console.log("No search")
@@ -313,18 +313,18 @@ getGameSearchResultsRouter.get('/', async (_req: Request, res: Response) => {
                 message: 'No search provided.'
             })*//*
         } else {*/
-            console.log("Search provided")
+            //console.log("Search provided")
             games = (
                 await gamesCollection.aggregate(pipeline).toArray()
             ) //as Game[];
 
             gameCount = games.length;
 
-            console.log("Games")
-            console.log(JSON.stringify(games))
+            //console.log("Games")
+            //console.log(JSON.stringify(games))
 
-            console.log("Game count")
-            console.log(gameCount)
+            //console.log("Game count")
+            //console.log(gameCount)
         //}
 
         //const pageCount: number = Math.ceil(Number(gameCount) / limit);

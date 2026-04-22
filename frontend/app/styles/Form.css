@@ -26,12 +26,20 @@
         @apply block border border-solid rounded-sm w-full p-2;
     }
 
+    .form-field:disabled {
+        @apply cursor-not-allowed;
+    }
+
     .form-submit-btn {
         @apply bg-violet-500 text-white p-2 rounded-sm cursor-pointer;
     }
 
     .form-submit-btn:active, .form-submit-btn:hover {
         @apply bg-violet-600;
+    }
+
+    .form-submit-btn:disabled {
+        @apply bg-violet-400 cursor-not-allowed;
     }
 
     .form-select {

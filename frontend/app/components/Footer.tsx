@@ -40,7 +40,17 @@ export default function Footer() {
                 <div className="text-white">
                     <h3 className="text-2xl">My Socials</h3>
 
-                    
+                    <div>
+                        <strong>LinkedIn:</strong> <Link href="https://www.linkedin.com/in/william-ackerman-6a4005290/" className={`${link}`} target="_blank" rel="noreferrer">
+                        https://www.linkedin.com/in/william-ackerman-6a4005290/
+                        </Link>
+                    </div>
+
+                    <div>
+                        <strong>Github:</strong> <Link href="https://github.com/WilliamAckerman" className={`${link}`} target="_blank" rel="noreferrer">
+                        https://github.com/WilliamAckerman
+                        </Link>
+                    </div>
                 </div>
             </div>
 

@@ -7,13 +7,32 @@ import Link from 'next/link';
 import '@/app/styles/General.css';
 
 import { useRef } from 'react';
+import { useActionState } from 'react';
+
+import SubmitButton from '@/app/components/SubmitButton';
+
+import type { ContactFormState } from '../_types/ContactFormState';
+
+const initialState: ContactFormState = {
+    /*name: '',
+    email: '',
+    subject: '',
+    message: '',
+    agree: false*/
+
+    errors: {},
+    success: null,
+    message: null
+}
 
 export default function ContactForm() {
     const altchaRef = useRef<HTMLInputElement>(null)
 
+    const [state, formAction, pending] = useActionState<ContactFormState, FormData>(sendContactMessage, initialState);
+
     return (
-        <div className="form">
-            <h2 className="form-header">
+        <div className="form bg-violet-950 text-white">
+            <h2 className="form-header text-white">
                 Contact Form
             </h2>
             <p>
@@ -26,7 +45,8 @@ export default function ContactForm() {
             <hr className="mt-2 mb-2" />
 
             <Form
-                action={sendContactMessage}
+                //action={sendContactMessage}
+                action={formAction}
             >
                 <div className="form-group">
                     <label htmlFor="name">Name<span className="required">*</span></label>
@@ -37,7 +57,16 @@ export default function ContactForm() {
                         className="form-field"
                         placeholder="Enter name..."
                         required
+
+                        disabled={pending}
                     />
+
+                    <p 
+                        aria-live="polite"
+                        className="required"
+                    >
+                        {state?.errors?.name}
+                    </p>
                 </div>
 
                 <div className="form-group">
@@ -49,7 +78,15 @@ export default function ContactForm() {
                         className="form-field"
                         placeholder="Enter email address..."
                         required
+
+                        disabled={pending}
                     />
+                    <p 
+                        aria-live="polite"
+                        className="required"
+                    >
+                        {state?.errors?.email}
+                    </p>
                 </div>
 
                 <div className="form-group">
@@ -61,7 +98,15 @@ export default function ContactForm() {
                         className="form-field"
                         placeholder="Enter subject..."
                         required
+
+                        disabled={pending}
                     />
+                    <p 
+                        aria-live="polite"
+                        className="required"
+                    >
+                        {state?.errors?.subject}
+                    </p>
                 </div>
 
                 <div className="form-group">
@@ -72,7 +117,19 @@ export default function ContactForm() {
                         className="form-field"
                         placeholder="Enter message..."
                         required
+
+                        disabled={pending}
                     ></textarea>
+                    <p 
+                        aria-live="polite"
+                        className="required"
+                    >
+                        {state?.errors?.message}
+                    </p>
+                </div>
+
+                <div className="form-group">
+                    <Altcha ref={altchaRef} />
                 </div>
 
                 <div className="form-group">
@@ -82,22 +139,46 @@ export default function ContactForm() {
                         type="checkbox"
                         value="true"
                         required
+
+                        disabled={pending}
+                        
+                        className="disabled:cursor-not-allowed"
                     /> <label htmlFor="agree">
                         By sending a message using the contact form, 
                         I agree to Savefile&apos;s <Link className="link" href="/guidelines">guidelines</Link> and <Link className="link" href="/privacy_policy">Privacy Policy</Link>.
                         <span className="required">*</span>
                     </label>
+                    <p 
+                        aria-live="polite"
+                        className="required"
+                    >
+                        {state?.errors?.agree}
+                    </p>
                 </div>
 
-                {/*<Altcha ref={altchaRef} />*/}
+                {
+                    state?.message &&
+                    <div className="form-group">
+                        <p
+                            className={`${state?.success == true ? "text-green-500" : "required"}`}
+                        >
+                            {state?.message}
+                        </p>
+                    </div>
+                }
 
                 <div>
-                    <button 
+                    {/*<button 
                         type="submit"
                         className="form-submit-btn"
+                        disabled={pending}
                     >
                         Submit
-                    </button>
+                    </button>*/}
+                    <SubmitButton
+                        style="form-submit-btn"
+                        text="Submit"
+                    />
                 </div>
             </Form>
         </div>

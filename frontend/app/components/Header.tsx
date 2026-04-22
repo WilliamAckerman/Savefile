@@ -43,7 +43,7 @@ export default function Header() {
                     </select>
                 </div>*/}
 
-                <div className="flex justify-around">
+                {/*<div className="flex justify-around">
                     <div className="flex justify-around">
                         <div>
                             <Link href="" className={`${link} mr-4`}>Log In</Link>
@@ -53,7 +53,7 @@ export default function Header() {
                             <Link href="" className={`${link} ml-4`}>Sign Up</Link>
                         </div>
                     </div>
-                </div>
+                </div>*/}
             </div>
         </header>
     )

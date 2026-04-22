@@ -16,7 +16,7 @@ getDisplayGamesRouter.post('/', jsonParser, async (req: Request, res: Response) 
     const reverse: boolean = body.reverse === true ? body.reverse : false
 
     const unix_timestamp = Date.now() / 1000;
-    console.log("Unix timestamp:", unix_timestamp)
+    //console.log("Unix timestamp:", unix_timestamp)
 
     // By using project, we can limit which fields to return
     const project = {
@@ -83,7 +83,7 @@ getDisplayGamesRouter.post('/', jsonParser, async (req: Request, res: Response) 
 
         const gamesCollection = db?.collection(process.env.MONGODB_GAME_COLLECTION_NAME!)
 
-        console.log("Connected to games collection.")
+        //console.log("Connected to games collection.")
 
         const games = (
             await gamesCollection
@@ -101,7 +101,7 @@ getDisplayGamesRouter.post('/', jsonParser, async (req: Request, res: Response) 
             games: games
         })
     } catch (error) {
-        console.error(error)
+        //console.error(error)
         res.json({
             success: false,
             error: error

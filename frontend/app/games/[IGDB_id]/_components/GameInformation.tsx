@@ -19,7 +19,6 @@ import WebsitesTab from '@/app/games/[IGDB_id]/_components/tab_panels/WebsitesTa
 import KeywordsTab from '@/app/games/[IGDB_id]/_components/tab_panels/KeywordsTab';
 import IGDBInformationTab from '@/app/games/[IGDB_id]/_components/tab_panels/IGDBInformationTab';
 import AddonTab from './tab_panels/AddonTab';
-import SimilarGamesTab from './tab_panels/SimilarGamesTab';
 
 import type Game from '@/app/lib/types/game';
 
@@ -49,8 +48,8 @@ export default function GameInformation(props) {
     const tab = searchParams.get('tab');
     const selectedValue = tab || "main";
 
-    console.log("Tab:", tab);
-    console.log("Selected:", selectedValue);
+    //console.log("Tab:", tab);
+    //console.log("Selected:", selectedValue);
 
     const theme = useMantineTheme();
     //console.log("Theme:");
@@ -98,6 +97,8 @@ export default function GameInformation(props) {
     if (data.expansions) validTabs.push("expansions")
     if (data.standalone_expansions) validTabs.push("standalone_expansions")
     if (data.expanded_games) validTabs.push("expanded_games")
+    if (data.remasters) validTabs.push("remasters")
+    if (data.remakes) validTabs.push("remakes")
     if (data.parent_game) validTabs.push("parent_game")
 
     const handleTabChange = (value: string) => {
@@ -148,7 +149,7 @@ export default function GameInformation(props) {
 
                 onChange={(value) => {
                     //if (validTabs.includes(String(value))) {
-                    console.log("Changed")
+                    //console.log("Changed")
                         router.push(`?tab=${value}`)
                     //}
                 }}
@@ -378,6 +379,30 @@ export default function GameInformation(props) {
                             onClick={() => handleTabChange("expanded_games")}
                         >
                             Expanded Games
+                        </TabsPrimitive.Trigger>
+                    }
+
+                    {
+                        data.remasters &&
+                        <TabsPrimitive.Trigger
+                            value="remasters"
+                            className="shadCdnTab"
+
+                            onClick={() => handleTabChange("remasters")}
+                        >
+                            Remasters
+                        </TabsPrimitive.Trigger>
+                    }
+
+                    {
+                        data.remakes &&
+                        <TabsPrimitive.Trigger
+                            value="remakes"
+                            className="shadCdnTab"
+
+                            onClick={() => handleTabChange("remakes")}
+                        >
+                            Remakes
                         </TabsPrimitive.Trigger>
                     }
 
@@ -620,6 +645,30 @@ export default function GameInformation(props) {
                             <AddonTab
                                 title="Expanded Games"
                                 addons={data.expanded_games}
+                            />
+                        </TabBackground>
+                    </TabsPrimitive.Content>
+                }
+
+                {
+                    data.remasters &&
+                    <TabsPrimitive.Content value="remasters">
+                        <TabBackground cover={data.cover ? data.cover : null}>
+                            <AddonTab
+                                title="Remasters"
+                                addons={data.remasters}
+                            />
+                        </TabBackground>
+                    </TabsPrimitive.Content>
+                }
+
+                {
+                    data.remakes &&
+                    <TabsPrimitive.Content value="remakes">
+                        <TabBackground cover={data.cover ? data.cover : null}>
+                            <AddonTab
+                                title="Remakes"
+                                addons={data.remakes}
                             />
                         </TabBackground>
                     </TabsPrimitive.Content>

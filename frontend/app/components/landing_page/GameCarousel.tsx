@@ -55,8 +55,8 @@ export default function GameCarousel(props) {
                             game.cover ?
                             <Image
                                 src={`https:${game.cover.url.replace("t_thumb", "t_cover_big_2x")}`}
-                                width={game.cover.width}
-                                height={game.cover.height}
+                                width={game.cover.width ? game.cover.width : 200}
+                                height={game.cover.height ? game.cover.height : 200}
                                 alt={`${game.title} game cover`}
                             />
                             :

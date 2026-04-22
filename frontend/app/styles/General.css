@@ -15,10 +15,10 @@
     }
 
     .link {
-        @apply text-blue-600 underline;
+        @apply text-blue-200 underline hover:text-blue-300 hover:no-underline;
     }
 
-    .link:hover {
-        @apply text-blue-700 no-underline;
-    }
+    /*.link:hover {
+        @apply text-blue-300 no-underline;
+    }*/
 }

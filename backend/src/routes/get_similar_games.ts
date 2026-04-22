@@ -21,7 +21,7 @@ getSimilarGamesRouter.post('/', jsonParser, async (_req: Request, res: Response)
         })
     }
 
-    console.log(IGDB_id);
+    //console.log(IGDB_id);
 
     try {
         const gamesCollection = db.collection(process.env.MONGODB_GAME_COLLECTION_NAME!);

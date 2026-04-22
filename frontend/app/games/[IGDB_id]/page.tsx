@@ -8,13 +8,13 @@ export default async function Page(
     { params }: { params: Promise<{ IGDB_id: string }> }
 ) {
     const slug: { IGDB_id: string } = await params
-    console.log(slug)
+    //console.log(slug)
 
     const data = await getGameData(slug.IGDB_id)
     const similarGameData = await getSimilarGames(Number(slug.IGDB_id));
     //console.log(data)
 
-    console.log(similarGameData);
+    //console.log(similarGameData);
 
     return (
         <div>
