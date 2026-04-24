@@ -2,21 +2,21 @@ import './_styles/tabContent.css';
 import RatingSection from '@/app/games/[IGDB_id]/_components/_ratings/RatingSection';
 
 interface RatingsTabProps {
-    rating: number
-    rating_count: number
-    aggregated_rating: number
-    aggregated_rating_count: number
-    total_rating: number
-    total_rating_count: number
+    rating?: number
+    rating_count?: number
+    aggregated_rating?: number
+    aggregated_rating_count?: number
+    total_rating?: number
+    total_rating_count?: number
 }
 
 export default function RatingsTab(props: RatingsTabProps) {
-    const rating: number = props.rating;
-    const ratingCount: number = props.rating_count;
-    const aggregatedRating: number = props.aggregated_rating;
-    const aggregatedRatingCount: number = props.aggregated_rating_count;
-    const totalRating: number = props.total_rating;
-    const totalRatingCount: number = props.total_rating_count;
+    const rating = props.rating;
+    const ratingCount = props.rating_count;
+    const aggregatedRating = props.aggregated_rating;
+    const aggregatedRatingCount = props.aggregated_rating_count;
+    const totalRating = props.total_rating;
+    const totalRatingCount = props.total_rating_count;
 
     return (
         <div className="w-full">

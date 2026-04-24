@@ -1,4 +1,4 @@
-function mapSupports(array) {
+/*function mapSupports(array) {
     let returnArray = [];
     for (let i = 0; i < array.length; i++) {
         returnArray.push(array[i]);
@@ -6,9 +6,17 @@ function mapSupports(array) {
     returnArray = returnArray.sort();
     const returnString = returnArray.join(", ");
     return returnString;
+}*/
+
+import type LanguageSupport from "@/app/lib/types/_language_supports/languageSupport";
+
+interface LanguageSupportSectionProps {
+    language_supports: LanguageSupport[]
+    type: string
+    keyValue: string
 }
 
-export default function LanguageSupportSection(props) {
+export default function LanguageSupportSection(props: LanguageSupportSectionProps) {
     const languageSupports = props.language_supports.sort();
     const type: string = props.type;
     const keyValue: string = props.keyValue;

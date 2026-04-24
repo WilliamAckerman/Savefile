@@ -1,9 +1,12 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import '@/app/games/[IGDB_id]/_styles/gameSection.css';
-import TabBackground from './TabBackground';
 
-function mapArray(array, sort: boolean = false) {
+import type Cover from '@/app/lib/types/cover';
+import type Genre from '@/app/lib/types/genre';
+import type Platform from '@/app/lib/types/platform';
+
+function mapArray(array: Genre[] | Platform[], sort: boolean = false) {
     let returnArray = []
     for (let i = 0; i < array.length; i++) {
         returnArray.push(array[i].name)
@@ -16,19 +19,25 @@ function mapArray(array, sort: boolean = false) {
 
 interface MainTabProps {
     title: string
+    game_type: string
+    game_status: string
+    cover: Cover | null
+    first_release_date: number
+    genres: Genre[]
+    platforms: Platform[]
 }
 
-export default function MainTab(props) {
+export default function MainTab(props: MainTabProps) {
     const title: string = props.title
     const game_type: string = props.game_type
     const game_status: string = props.game_status;
     const cover = props.cover
     const firstReleaseDate: number = props.first_release_date
-    const genres: string[] = props.genres
-    const platforms: string[] = props.platforms
+    const genres = props.genres
+    const platforms = props.platforms
 
-    const summary: string = props.summary;
-    const storyline: string = props.storyline;
+    //const summary: string = props.summary;
+    //const storyline: string = props.storyline;
 
     const unixTimestamp = useState(() => Date.now() / 1000)
     const timestampValue: number = unixTimestamp[0];
@@ -41,7 +50,7 @@ export default function MainTab(props) {
     return (
         <div className="flex flex-col md:flex-row">
             {
-                cover != "" &&
+                cover &&
                 <div className="mr-4">
                     {
                     (cover && cover.url) ?

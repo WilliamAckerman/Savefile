@@ -6,13 +6,13 @@ function getRatingColor(rating: number) {
 
 interface RatingSectionProps {
     rating: number
-    rating_count: number
     rating_type: string
+    rating_count?: number
 }
 
 export default function RatingSection(props: RatingSectionProps) {
     const rating: number = Math.floor(props.rating);
-    const ratingCount: number = props.rating_count;
+    const ratingCount = props.rating_count;
     const ratingType: string = props.rating_type;
 
     const ratingColor: string = getRatingColor(rating);

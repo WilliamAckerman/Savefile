@@ -7,7 +7,18 @@ import GameGrid from '@/app/components/GameGrid';
 
 import type Addon from '@/app/lib/types/addon';
 
-async function SearchResults(props) {
+type GameData = {
+    games: Addon[]
+    gameCount: number
+    pageCount: number
+}
+
+interface SearchResultsProps {
+    games: GameData
+    currentPage: number
+}
+
+async function SearchResults(props: SearchResultsProps) {
     /*const searchParams = props.searchParams;
 
     const search = props.search;
@@ -156,7 +167,7 @@ async function SearchResults(props) {
                     <div className="mx-auto flex items-center">
                         <Pagination
                             pageCount={pageCount}
-                            currentPage={currentPage}
+                            //currentPage={currentPage}
                         />
                     </div>
 

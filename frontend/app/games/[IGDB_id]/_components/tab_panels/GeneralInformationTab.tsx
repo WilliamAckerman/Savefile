@@ -7,13 +7,13 @@ import TimeToBeatSection from '@/app/games/[IGDB_id]/_components/_general_info/T
 interface GeneralInformationTabProps {
     summary: string
     storyline: string
-    game_time_to_beat: GameTimeToBeat
+    game_time_to_beat?: GameTimeToBeat
 }
 
 export default function GeneralInformationTab(props: GeneralInformationTabProps) {
     const summary: string = props.summary;
     const storyline: string = props.storyline;
-    const gameTimeToBeat: GameTimeToBeat = props.game_time_to_beat;
+    const gameTimeToBeat = props.game_time_to_beat;
 
     const h2 = "text-white mb-2";
 

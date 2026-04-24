@@ -1,6 +1,15 @@
 import '@/app/games/[IGDB_id]/_styles/gameSection.css';
 
-export default function TabBackground(props) {
+import type Cover from '@/app/lib/types/cover';
+import { ReactNode } from 'react';
+
+interface TabBackgroundProps {
+    cover: Cover | null
+    children: ReactNode
+    center?: boolean
+}
+
+export default function TabBackground(props: TabBackgroundProps) {
     const cover = props.cover
     const center: boolean = props.center ? props.center : false;
 

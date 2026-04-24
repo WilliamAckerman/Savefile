@@ -4,13 +4,17 @@ import { useRouter } from 'next/navigation';
 import { useSearchParams, usePathname } from 'next/navigation';
 import Form from 'next/form';
 
-function Pagination(props) {
+interface PaginationProps {
+    pageCount: number
+}
+
+function Pagination(props: PaginationProps) {
     const searchParams = useSearchParams();
     const pathname = usePathname();
 
-    const handleButtonClick = (value) => {
+    const handleButtonClick = (value: number) => {
         const params = new URLSearchParams(searchParams.toString());
-        params.set('page', value);
+        params.set('page', String(value));
 
         router.push(pathname + "?" + params);
     }

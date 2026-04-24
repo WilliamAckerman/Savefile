@@ -21,6 +21,8 @@ import IGDBInformationTab from '@/app/games/[IGDB_id]/_components/tab_panels/IGD
 import AddonTab from './tab_panels/AddonTab';
 
 import type Game from '@/app/lib/types/game';
+import type Addon from '@/app/lib/types/addon';
+import type SimilarGames from '@/app/lib/types/similarGames';
 
 import '@/app/games/[IGDB_id]/_styles/gameSection.css';
 
@@ -30,11 +32,12 @@ import { Tabs as TabsPrimitive } from "radix-ui";
 
 interface GameInformationProps {
     data: Game
+    similarGameData: SimilarGames
 }
 
 import { useMantineTheme } from '@mantine/core';
 
-export default function GameInformation(props) {
+export default function GameInformation(props: GameInformationProps) {
     const router = useRouter();
     const data = props.data
 
@@ -203,7 +206,7 @@ export default function GameInformation(props) {
                             data.rating ||
                             data.rating_count ||
                             data.aggregated_rating ||
-                            data.aggregating_rating_count ||
+                            data.aggregated_rating_count ||
                             data.total_rating ||
                             data.total_rating_count
                         ) &&
@@ -444,8 +447,8 @@ export default function GameInformation(props) {
                             genres={data.genres ? data.genres : []}
                             platforms={data.platforms ? data.platforms : []}
 
-                            summary={data.summary ? data.summary : ""}
-                            storyline={data.storyline ? data.storyline : ""}
+                            //summary={data.summary ? data.summary : ""}
+                            //storyline={data.storyline ? data.storyline : ""}
                         />
                     </TabBackground>
                 </TabsPrimitive.Content>

@@ -30,44 +30,6 @@ request_timeout = (int(600), int(600))
 database = client.get_database(DATABASE) # Select the MongoDB database to use
 games = database.get_collection(GAMES_COLLECTION) # Select the database collection
 
-"""game_ids = [
-    #int(26602),
-    #int(171233),
-    #int(17000),
-    #int(338106),
-    #int(25076),
-    #int(151665),
-    #int(251833),
-    #int(338105),
-    #int(26673),
-    #int(12517),
-    #int(332780),
-    #int(348210),
-    #int(254339),
-    #int(168667),
-    #int(134612),
-    #int(52189),
-    #int(119313),
-    #int(217565),
-    #int(294041),
-    #int(121),
-    #int(6705),
-    #int(25076),
-    #int(366893),
-    #int(284716),
-    #int(264410),
-    #int(251833),
-
-    #int(15890),
-    #int(31463)
-
-    #int(396383),
-    #int(194143),
-    #int(113360)
-
-    int(393025)
-]"""
-
 game_ids = []
 
 async def get_popular_games(popularity_type):

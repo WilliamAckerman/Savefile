@@ -4,10 +4,10 @@ import Link from 'next/link';
 import formatUnixTimestamp from '@/app/lib/utility_functions/formatUnixTimestamp';
 
 interface IGDBInformationTabProps {
-    hypes: number
     IGDB_created_at: number
     IGDB_updated_at: number
     IGDB_url: string
+    hypes?: number
 }
 
 export default function IGDBInformationTab(props: IGDBInformationTabProps) {

@@ -9,16 +9,16 @@ import type ReleaseDate from '@/app/lib/types/_release_dates/releaseDate';
 import formatUnixTimestamp from '@/app/lib/utility_functions/formatUnixTimestamp';
 
 interface AdditionalInformationTabProps {
-    game_modes: GameMode[]
-    multiplayer_modes: MultiplayerMode[]
-    player_perspectives: PlayerPerspective[]
-    alternative_names: AlternativeTitle[]
-    game_engines: GameEngine[]
-    release_dates: ReleaseDate[]
+    game_modes?: GameMode[]
+    multiplayer_modes?: MultiplayerMode[]
+    player_perspectives?: PlayerPerspective[]
+    alternative_names?: AlternativeTitle[]
+    game_engines?: GameEngine[]
+    release_dates?: ReleaseDate[]
 
-    hypes: number
-    created_at: number
-    updated_at: number
+    hypes?: number
+    created_at?: number
+    updated_at?: number
 }
 
 export default function AdditionalInformationTab(props: AdditionalInformationTabProps) {

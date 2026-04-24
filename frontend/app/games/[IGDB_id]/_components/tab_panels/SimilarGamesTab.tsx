@@ -2,7 +2,13 @@ import './_styles/tabContent.css';
 import Link from 'next/link';
 import Image from 'next/image';
 
-export default function SimilarGamesTab(props) {
+import type Addon from '@/app/lib/types/addon';
+
+interface SimilarGamesTabProps {
+    similar_games: Addon[]
+}
+
+export default function SimilarGamesTab(props: SimilarGamesTabProps) {
     const similarGames = props.similar_games
 
     return (

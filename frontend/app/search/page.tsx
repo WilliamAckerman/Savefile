@@ -33,6 +33,36 @@ export default async function Search(
             expansion?: boolean;
             standalone_expansion?: boolean;
             dlc?: boolean;
+
+            adventure?: boolean;
+            arcade?: boolean;
+            card?: boolean;
+            fighting?: boolean;
+            hack_and_slash?: boolean;
+            indie?: boolean;
+            moba?: boolean;
+            music?: boolean;
+            platform?: boolean;
+            point_and_click?: boolean;
+            puzzle?: boolean;
+            quiz?: boolean;
+            racing?: boolean;
+            rts?: boolean;
+            rpg?: boolean;
+            simulator?: boolean;
+            shooter?: boolean;
+            sports?: boolean;
+            strategy?: boolean;
+            tactical?: boolean;
+            tbs?: boolean;
+            visual_novel?: boolean;
+
+            single_player?: boolean;
+            multiplayer?: boolean;
+            co_op?: boolean;
+            split_screen?: boolean;
+            mmo?: boolean;
+            battle_royale?: boolean;
         }>;
     }
 ) {
@@ -76,7 +106,7 @@ export default async function Search(
                     <div className="flex items-center lg:w-[60%]">
                         <Suspense fallback={<p>Loading search results...</p>}>
                             <SearchResults 
-                                searchParams={searchParams}
+                                //searchParams={searchParams}
                                 games={gameData}
                                 currentPage={currentPage}
                             />

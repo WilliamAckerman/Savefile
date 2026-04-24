@@ -4,10 +4,21 @@ import Image from 'next/image'
 import Link from 'next/link';
 import classes from '@/app/styles/Carousel.module.css'
 
-export default function GameCarousel(props) {
+import type Game from '@/app/lib/types/game';
+
+interface GameArray {
+    games: Game[]
+}
+
+interface GameCarouselProps {
+    code: string
+    array: GameArray
+}
+
+export default function GameCarousel(props: GameCarouselProps) {
     const code = props.code
     const array = props.array
-    const field = props.field
+    //const field = props.field
 
     return (
         <Carousel 
@@ -74,7 +85,7 @@ export default function GameCarousel(props) {
                             }
 
                             {
-                                code == "total_rating" &&
+                                code == "total_rating" && game.total_rating &&
                                 <span className="inline-block mt-2 p-1 rounded-sm text-white bg-green-500">
                                     {Math.floor(game.total_rating)}
                                 </span>
