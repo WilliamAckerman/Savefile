@@ -12,8 +12,8 @@ export default async function DisplayGames(props: DisplayGamesProps) {
     const field = props.field ? props.field : "total_rating_count"
     const reverse: boolean = props.reverse ? props.reverse : false
 
-    const data = await getDisplayGames(code, field, reverse)
-    const gameData = await data.json()
+    const gameData = await getDisplayGames(code, field, reverse)
+    //const gameData = await data.json()
     
     return (
         <>

@@ -10,5 +10,9 @@ export default async function getDisplayGames(code="total_rating_count", field="
             'reverse': reverse
         })
     })
-    return res
+    
+    const data = await res.json()
+
+    //return res
+    return data;
 }
