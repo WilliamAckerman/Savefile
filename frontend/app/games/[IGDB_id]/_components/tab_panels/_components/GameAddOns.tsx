@@ -2,8 +2,14 @@ import getGameAddOns from "../_api/getGameAddOns";
 import Link from 'next/link';
 import Image from 'next/image';
 
+import type Addon from "@/app/lib/types/addon";
+interface GameAddOnsProps {
+    type: string
+    title: string
+}
+
 async function GameAddOns(
-    props,
+    props: GameAddOnsProps,
     { params }: { params: Promise<{ IGDB_id: string }> }
 ) {
     //const IGDB_id = props.IGDB_id;
@@ -46,7 +52,7 @@ async function GameAddOns(
                         "
                     >
                         {
-                            games && games.map((game) => {
+                            games && games.map((game: Addon) => {
                                 <div
                                     key={game.IGDB_id}
                                     className="
