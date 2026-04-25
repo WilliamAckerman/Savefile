@@ -27,18 +27,29 @@ app.get('/', (req: Request, res: Response) => {
     res.send("Hello World!")
 })
 
+app.use("/get_display_games", getDisplayGamesRouter)
+app.use("/get_game_data", getGameDataRouter)
+app.use("/get_game_search_results", getGameSearchResultsRouter);
+app.use("/get_game_add_ons", getGameAddOnsRouter);
+app.use("/get_similar_games", getSimilarGamesRouter);
+
+app.use("/send_contact_message", sendContactMessageRouter)
+app.use("/altcha_challenge", altchaChallengeRouter)
+
+export default app;
+
 app.listen(PORT, async () => {
     try {
         //await initMongoDbClient()
 
-        app.use("/get_display_games", getDisplayGamesRouter)
+        /*app.use("/get_display_games", getDisplayGamesRouter)
         app.use("/get_game_data", getGameDataRouter)
         app.use("/get_game_search_results", getGameSearchResultsRouter);
         app.use("/get_game_add_ons", getGameAddOnsRouter);
         app.use("/get_similar_games", getSimilarGamesRouter);
 
         app.use("/send_contact_message", sendContactMessageRouter)
-        app.use("/altcha_challenge", altchaChallengeRouter)
+        app.use("/altcha_challenge", altchaChallengeRouter)*/
         
         console.log(`Example app listening on port ${PORT}`)
     } catch (error) {
