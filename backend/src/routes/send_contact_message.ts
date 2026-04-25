@@ -66,7 +66,7 @@ sendContactMessageRouter.post('/', jsonParser, async (_req: Request, res: Respon
     //console.log(`OK: ${ok}`)
 
     if (!ok) {
-        res.json({
+        res.status(500).json({
             success: false,
             'error': 'Altcha challenge failed.'
         })

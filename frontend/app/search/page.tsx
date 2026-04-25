@@ -90,8 +90,10 @@ export default async function Search(
     const standalone_expansion = searchParams?.standalone_expansion || false;
     const dlc = searchParams?.dlc || false;
 
-    const data = await getSearchResults(searchParams);
-    const gameData = await data.json();
+    //const data = await getSearchResults(searchParams);
+    //const gameData = await data.json();
+
+    const gameData = await getSearchResults(searchParams);
 
     return (
         <div>
@@ -105,11 +107,16 @@ export default async function Search(
 
                     <div className="flex items-center lg:w-[60%]">
                         <Suspense fallback={<p>Loading search results...</p>}>
+                        {
+                            gameData?.success == true ?
                             <SearchResults 
                                 //searchParams={searchParams}
                                 games={gameData}
                                 currentPage={currentPage}
                             />
+                            :
+                            <p>Failed to get search results.</p>
+                        }
                         </Suspense>
                     </div>
                 </div>

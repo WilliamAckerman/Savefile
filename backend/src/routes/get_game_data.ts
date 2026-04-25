@@ -27,12 +27,12 @@ getGameDataRouter.get("/:game_id", jsonParser, async (req: Request, res: Respons
         )
 
         if (game.length == 0) {
-            res.json({
+            res.status(404).json({
                 success: false,
                 error: "Error getting game data: No game was found for this ID."
             })
         } else {
-            res.json({
+            res.status(200).json({
                 success: true,
                 message: `Got game data for game with IGDB id of ${gameId} successfully.`,
                 data: game[0]
@@ -40,7 +40,7 @@ getGameDataRouter.get("/:game_id", jsonParser, async (req: Request, res: Respons
         }
 
     } catch (error) {
-        res.json({
+        res.status(500).json({
             success: false,
             error: `Error getting game data: ${error}`
         })

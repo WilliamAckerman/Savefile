@@ -25,7 +25,7 @@ export default function Page() {
 
                 <div className="text-box bg-violet-800 mb-8">
                     <h2 className="secondary-header mb-4">Savefile Privacy Policy</h2>
-                    <p className="mb-2">Effective Date: April 22, 2026</p>
+                    <p className="mb-2">Effective Date: April 25, 2026</p>
                     <hr className="mb-2" />
 
                     <Accordion type="single" collapsible className="bg-violet-800">
@@ -83,9 +83,8 @@ export default function Page() {
                                     you when you use this website:
                                 </span>
                                 <ul className="list-disc list-inside mb-2">
-                                    <li>IP address</li>
-                                    <li>Location information delivered from your IP address</li>
-                                    <li>System configuration information</li>
+                                    <li>IP address, along with location information derived from it</li>
+                                    <li>Information regarding system configuration</li>
                                 </ul>
 
                                 <p>

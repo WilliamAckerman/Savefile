@@ -19,10 +19,15 @@ export default async function Page(
     return (
         <div>
             <Suspense fallback={<p>Loading game data...</p>}>
+            {
+                data?.success === true ?
                 <GameInformation
                     data={data.data}
                     similarGameData={similarGameData}
                 />
+                :
+                <p>Failed to get game data.</p>
+            }
             </Suspense>
         </div>
     )

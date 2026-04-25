@@ -101,7 +101,11 @@ export default async function sendContactMessage(initialState: ContactFormState,
 
         //console.log(res)
 
-        const data = await res.json()
+        if (!res.ok) {
+            throw new Error("Response was not ok.");
+        }
+
+        //const data = await res.json()
         //console.log(data)
     
         //return res;

@@ -18,13 +18,16 @@ export default async function DisplayGames(props: DisplayGamesProps) {
     return (
         <>
             { 
-                gameData &&
+                (gameData && gameData?.success === true) ?
                 <GameCarousel
                     array={gameData}
                     code={code}
                     //field={field}
                     //reverse={reverse}
                 />
+                :
+                <p>Failed to get games.</p>
+                
             }
         </>
     )

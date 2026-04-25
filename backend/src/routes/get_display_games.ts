@@ -96,13 +96,13 @@ getDisplayGamesRouter.post('/', jsonParser, async (req: Request, res: Response) 
 
         //console.log(games)
 
-        res.json({
+        res.status(200).json({
             success: true,
             games: games
         })
     } catch (error) {
         //console.error(error)
-        res.json({
+        res.status(500).json({
             success: false,
             error: error
         })

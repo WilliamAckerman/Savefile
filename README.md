@@ -7,4 +7,4 @@ The IGDB API is used in developing this project.
 Please support IGDB by checking out their website here: https://www.igdb.com/.
 
 # Privacy Policy
-Effective Date: April 22, 2026
+Effective Date: April 25, 2026

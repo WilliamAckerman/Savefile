@@ -220,14 +220,30 @@ const getSearchResults = async (
         queryString += paramString;
     }
 
-    const res = await fetch(queryString, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
+    try {
 
-    return res;
+        const res = await fetch(queryString, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+
+        if (!res.ok) {
+            throw new Error("Response was not ok.")
+        }
+
+        const data = await res.json();
+
+        //return res;
+        return data;
+
+    } catch (error) {
+        return {
+            'success': false,
+            'error': `Error getting search results: ${error}`
+        }
+    }
 }
 
 export default getSearchResults;
