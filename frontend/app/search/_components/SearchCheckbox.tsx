@@ -12,14 +12,16 @@ export default function SearchCheckbox(props: SearchCheckboxProps) {
 
     return (
         <div>
-            <input
-                name={checkboxName}
-                id={checkboxName}
-                type="checkbox"
-                value="true"
-                checked={checkbox}
-                onChange={() => setCheckbox(!checkbox)}
-            /> <label htmlFor={checkboxName}>{displayName}</label>
+            <label>
+                <input
+                    name={checkboxName}
+                    id={checkboxName}
+                    type="checkbox"
+                    value="true"
+                    checked={checkbox}
+                    onChange={() => setCheckbox(!checkbox)}
+                /> {/*<label htmlFor={checkboxName}>*/}{displayName}{/*</label>*/}
+            </label>
         </div>
     )
 }

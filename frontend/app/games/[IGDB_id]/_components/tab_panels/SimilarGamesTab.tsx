@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 import type Addon from '@/app/lib/types/addon';
+import SectionHeader from '../_general/SectionHeader';
 
 interface SimilarGamesTabProps {
     similar_games: Addon[]
@@ -12,10 +13,10 @@ export default function SimilarGamesTab(props: SimilarGamesTabProps) {
     const similarGames = props.similar_games
 
     return (
-        <div className="w-full">
-            <h1 className="text-white h1">
-                Similar Games
-            </h1>
+        <div className="w-full max-h-[80vh]">
+            <SectionHeader
+                title="Similar Games"
+            />
 
             {
                 (similarGames && similarGames.length > 0)

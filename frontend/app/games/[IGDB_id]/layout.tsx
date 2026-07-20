@@ -6,6 +6,8 @@ import '@mantine/carousel/styles.css';
 import { MantineProvider } from '@mantine/core';
 import defaultTheme from '@/app/lib/themes/defaultTheme';
 
+import { ThemeProvider } from 'next-themes';
+
 const geistSans = Geist({
     variable: "--font-geist-sans",
     subsets: ["latin"],
@@ -22,7 +24,7 @@ export default function GameLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <MantineProvider theme={defaultTheme}>
+        <MantineProvider /*theme={defaultTheme}*/>
             {children}
         </MantineProvider>
     )

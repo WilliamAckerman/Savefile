@@ -17,15 +17,18 @@ export default function GameGrid(props: GameGridProps) {
         grid 
         grid-cols-2 
         lg:grid-cols-4 
-        gap-4 
+        gap-1 
         mx-auto 
-        p-4
-    `;
+        p-0
+    `; // Originally had gap-4 and p-4 classes
 
     if (isSearchGrid) gridStyle += `
         h-[45vh]
         lg:h-[95vh]
         overflow-y-auto
+
+        bg-secondaryBg
+        mt-2
     `;
 
     return (
@@ -52,12 +55,22 @@ export default function GameGrid(props: GameGridProps) {
                                     ease-in-out
                                     hover:scale-110
                                     hover:cursor-pointer
+
+                                    motion-reduce:transition-none
                                 "
                             >
                                 <Link
                                     href={`/games/${displayGame.IGDB_id}`} 
                                     title={displayGame.title}
                                 >
+                                    <div className="relative">
+                                    {/*
+                                        displayGame.game_type &&
+                                        <div className="bg-accentBg rounded-br-sm mx-auto absolute p-1">
+                                            <span className="text-accentText center">{displayGame.game_type.type}</span>
+                                        </div>
+                                    */}
+
                                     {
                                         displayGame.cover ?
                                         <Image
@@ -67,15 +80,16 @@ export default function GameGrid(props: GameGridProps) {
                                             alt={`${displayGame.title} game cover`}
                                         />
                                         :
-                                        <div className="bg-black">
-                                            <span className="text-white">
+                                        <div className={`bg-secondaryBg text-secondaryText min-h-[112px] md:min-h-[220px] flex items-center justify-center ${isSearchGrid && 'border'}`}>
+                                            <strong className="text-center">
                                                 No image available
-                                            </span>
+                                            </strong>
                                         </div>
                                     }
+                                    </div>
 
-                                    <div className="bg-white p-1">
-                                        <strong className="block truncate text-black">
+                                    <div className="bg-accentBg p-1">
+                                        <strong className="block truncate text-accentText">
                                             {displayGame.title}
                                         </strong>
                                     </div>

@@ -32,9 +32,11 @@ function Pagination(props: PaginationProps) {
 
     const router = useRouter();
 
-    const button = "p-4 md:text-lg lg:text-xl";
-    const hover = "hover:cursor-pointer hover:bg-neutral-100";
-    const disabled = "bg-neutral-200 hover:cursor-not-allowed";
+    const button = "p-4 md:text-lg lg:text-xl text-buttonText";
+    //const hover = "hover:cursor-pointer hover:bg-neutral-100";
+    const hover = "hover:bg-buttonDarkened hover:cursor-pointer";
+    //const disabled = "bg-neutral-200 hover:cursor-not-allowed";
+    const disabled = "bg-buttonLightened hover:cursor-not-allowed";
 
     return (
         <div className="mt-4 mx-auto">
@@ -45,8 +47,8 @@ function Pagination(props: PaginationProps) {
                         ${button}
                         rounded-l-sm
                         ${(currentPage != 1) ? hover : ""}
-                        ${(currentPage == 1) ? disabled : "bg-white"}
-                    `}
+                        ${(currentPage == 1) ? disabled : "bg-button"}
+                    `} /* Formerly bg-white */
                     disabled={(currentPage == 1)}
                     onClick={() => handleButtonClick(1)}
                 >
@@ -57,8 +59,8 @@ function Pagination(props: PaginationProps) {
                     className={`
                         ${button} 
                         ${(currentPage - 1) > 0 ? hover : ""}
-                        ${(currentPage - 1) <= 0 ? disabled : "bg-white"}
-                    `}
+                        ${(currentPage - 1) <= 0 ? disabled : "bg-button"}
+                    `} /* Formerly bg-white */
                     disabled={(currentPage - 1) <= 0}
                     onClick={() => handleButtonClick(currentPage - 1)}
                 >
@@ -68,7 +70,7 @@ function Pagination(props: PaginationProps) {
                 { 
                     (currentPage - 2) > 0 &&
                     <button 
-                        className={`${button} bg-white ${hover}`}
+                        className={`${button} bg-button ${hover}`} // Formerly had bg-white class
                         onClick={() => handleButtonClick(currentPage - 2)}
                     >
                         {currentPage - 2}
@@ -78,21 +80,24 @@ function Pagination(props: PaginationProps) {
                 { 
                     (currentPage - 1) > 0 &&
                     <button 
-                        className={`${button} bg-white ${hover}`}
+                        className={`${button} bg-button ${hover}`}
                         onClick={() => handleButtonClick(currentPage - 1)}
                     >
                         {currentPage - 1}
                     </button>
                 }
 
-                <div className={`${button} bg-sky-200`}>
+                <div 
+                    //className={`${button} bg-sky-200`}
+                    className={`${button} bg-secondaryBg text-secondaryText`}
+                >
                     {currentPage}
                 </div>
 
                 { 
                     (currentPage + 1) <= pageCount &&
                     <button 
-                        className={`${button} bg-white ${hover}`}
+                        className={`${button} bg-button ${hover}`}
                         disabled={(currentPage + 1) > pageCount}
                         onClick={() => handleButtonClick(currentPage + 1)}
                     >
@@ -103,7 +108,7 @@ function Pagination(props: PaginationProps) {
                 { 
                     (currentPage + 2) <= pageCount &&
                     <button 
-                        className={`${button} bg-white ${hover}`}
+                        className={`${button} bg-button ${hover}`}
                         disabled={(currentPage + 2) > pageCount}
                         onClick={() => handleButtonClick(currentPage + 2)}
                     >
@@ -115,7 +120,7 @@ function Pagination(props: PaginationProps) {
                     className={`
                         ${button} 
                         ${(currentPage + 1) <= pageCount ? hover : ""}
-                        ${(currentPage + 1) > pageCount ? disabled : "bg-white"}
+                        ${(currentPage + 1) > pageCount ? disabled : "bg-button"}
                     `}
                     disabled={(currentPage + 1) > pageCount}
                     onClick={() => handleButtonClick(currentPage + 1)}
@@ -128,7 +133,7 @@ function Pagination(props: PaginationProps) {
                         ${button}
                         rounded-r-sm
                         ${(currentPage != pageCount) ? hover : ""}
-                        ${(currentPage == pageCount) ? disabled : "bg-white"}
+                        ${(currentPage == pageCount) ? disabled : "bg-button"}
                     `}
                     disabled={(currentPage == pageCount)}
                     onClick={() => handleButtonClick(pageCount)}

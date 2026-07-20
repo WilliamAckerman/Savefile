@@ -1,4 +1,282 @@
 @import "tailwindcss";
+@tailwindcss components;
+
+@theme {
+  /*--color-primaryBg: hsl(0, 0%, 96%);
+  --color-primaryText: hsl(0, 0%, 13%);
+  --color-primaryLink: hsl(240, 100%, 47%);*/
+  --color-primaryBg: oklch(20.8% 0.042 265.755);
+  --color-primaryText: white;
+  --color-primaryLink: oklch(88.2% 0.059 254.128);
+
+  /*--color-secondaryBg: hsl(0, 0%, 100%);
+  --color-secondaryText: 	hsl(0, 0%, 13%);*/
+  --color-secondaryBg: oklch(12.9% 0.042 264.695);
+  --color-secondaryText: #fff;
+
+  --foreground: black;
+
+  --color-accentBg: oklch(43.2% 0.232 292.759);
+  
+  --color-accentText: hsl(0, 0%, 100%);
+  /*--color-accentLink: oklch(93.2% 0.032 255.585);*/
+  --color-accentLink: hsl(0, 0%, 100%);
+
+  --color-accentBgDarkened: oklch(54.1% 0.281 293.009);
+  --color-accentBorder: hsl(0, 0%, 100%);
+
+  --color-button: oklch(43.2% 0.232 292.759); /*oklch(60.6% 0.25 292.717);*/ /* bg-violet-500 */
+  --color-buttonDarkened: oklch(38% 0.189 293.745); /*oklch(54.1% 0.281 293.009);*/
+  --color-buttonLightened: oklch(60.6% 0.25 292.717); /*oklch(70.2% 0.183 293.541)*/
+  --color-buttonText: hsl(0, 0%, 100%);
+
+  --color-resetButton: oklch(55.1% 0.027 264.364);
+  --color-resetButtonDarkened: oklch(44.6% 0.03 256.802);
+  --color-resetButtonText: oklch(98.5% 0 0);
+
+  /*--color-formFieldBg: #fff;
+  --color-formFieldText: #222;*/
+  --color-formFieldBg: #000;
+  --color-formFieldText: #fff;
+
+  /*--color-success: oklch(44.8% 0.119 151.328);*/
+  --color-success: oklch(72.3% 0.219 149.579);
+
+  --color-required: oklch(63.7% 0.237 25.331);
+
+  /*--color-blueBtn: oklch(48.8% 0.243 264.376);*/
+  --color-blueBtn: oklch(62.3% 0.214 259.815);
+
+  --color-active: oklch(90.5% 0.182 98.111);
+}
+
+@layer base {
+  [data-theme='light'] {
+    --color-primaryBg: hsl(0, 0%, 96%);
+    --color-primaryText: hsl(0, 0%, 13%);
+    --color-primaryLink: hsl(240, 100%, 47%);
+
+    --color-secondaryBg: hsl(0, 0%, 100%);
+    --color-secondaryText: 	hsl(0, 0%, 13%);
+
+    --color-formFieldBg: #fff;
+    --color-formFieldText: #222;
+
+    --color-success: oklch(44.8% 0.119 151.328);
+
+    --color-blueBtn: oklch(48.8% 0.243 264.376);
+
+    --color-active: oklch(90.5% 0.182 98.111);
+  }
+
+  /*[data-theme='dark'] {
+    --color-primaryBg: oklch(20.8% 0.042 265.755);
+    --color-primaryText: white;
+    --color-primaryLink: oklch(88.2% 0.059 254.128);
+
+    --color-secondaryBg: oklch(12.9% 0.042 264.695);
+    --color-secondaryText: #fff;
+
+    --foreground: white;
+
+    --color-accentBg: oklch(43.2% 0.232 292.759);
+    --color-accentText: #fff;
+    --color-accentBorder: hsl(0, 0%, 100%);
+
+    --color-formFieldBg: #000;
+    --color-formFieldText: #fff;
+
+    --color-success: oklch(72.3% 0.219 149.579);
+    
+    --color-blueBtn: oklch(62.3% 0.214 259.815);
+    --color-yellowBtn: oklch(79.5% 0.184 86.047);
+  }*/
+
+  [data-theme='blue'] {
+    --color-primaryBg: oklch(21% 0.034 264.665);
+    --color-primaryText: white;
+    --color-primaryLink: oklch(88.2% 0.059 254.128);
+
+    --color-secondaryBg: oklch(27.8% 0.033 256.848);
+    --color-secondaryText: #fff;
+
+    --foreground: white;
+
+    --color-accentBg: oklch(42.4% 0.199 265.638);
+    --color-accentText: #fff;
+    --color-accentBgDarkened: oklch(54.6% 0.245 262.881);
+    --color-accentBorder: hsl(0, 0%, 100%);
+
+    /*--color-button: oklch(62.3% 0.214 259.815);
+    --color-buttonDarkened: oklch(54.6% 0.245 262.881);
+    --color-buttonLightened: oklch(70.7% 0.165 254.624);*/
+
+    --color-button: oklch(42.4% 0.199 265.638);
+    --color-buttonDarkened: oklch(37.9% 0.146 265.522);
+    --color-buttonLightened: oklch(62.3% 0.214 259.815); /*oklch(70.7% 0.165 254.624);*/
+
+    --color-resetButton: oklch(92.8% 0.006 264.531);
+    --color-resetButtonDarkened: oklch(87.2% 0.01 258.338);
+    --color-resetButtonText: oklch(14.5% 0 0);
+
+    --color-required: oklch(70.4% 0.191 22.216);
+    --color-success: oklch(72.3% 0.219 149.579);
+
+    --color-formFieldBg: oklch(14.5% 0 0);
+    --color-formFieldText: oklch(98.5% 0 0);
+
+    --color-active: oklch(83.7% 0.128 66.29);
+  }
+
+  [data-theme='green'] {
+    --color-primaryBg: oklch(86.9% 0.022 252.894);
+    --color-primaryText: hsl(0, 0%, 13%);
+    --color-primaryLink: hsl(240, 100%, 47%);
+
+    --color-secondaryBg: #fff;
+    --color-secondaryText: 	hsl(0, 0%, 13%);
+
+    --foreground: white;
+
+    --color-formFieldBg: #fff;
+    --color-formFieldText: #222;
+
+    --color-accentBg: oklch(44.8% 0.119 151.328);
+    --color-accentText: #fff;
+    --color-accentBgDarkened: oklch(62.7% 0.194 149.214);
+    --color-accentBorder: hsl(0, 0%, 100%);
+
+    /*--color-button: oklch(72.3% 0.219 149.579);
+    --color-buttonDarkened: oklch(62.7% 0.194 149.214);
+    --color-buttonLightened: oklch(79.2% 0.209 151.711);*/
+
+    --color-button: oklch(44.8% 0.119 151.328);
+    --color-buttonDarkened: oklch(39.3% 0.095 152.535);
+    --color-buttonLightened: oklch(62.7% 0.194 149.214);
+
+    --color-success: oklch(44.8% 0.119 151.328);
+
+    --color-blueBtn: oklch(48.8% 0.243 264.376);
+
+    --color-active: oklch(87.9% 0.169 91.605);
+  }
+
+  [data-theme='red'] {
+    --color-primaryBg: hsl(0, 0%, 96%);
+    --color-primaryText: hsl(0, 0%, 13%);
+    --color-primaryLink: hsl(240, 100%, 47%);
+
+    --color-secondaryBg: hsl(0, 0%, 100%);
+    --color-secondaryText: 	hsl(0, 0%, 13%);
+
+    --color-formFieldBg: #fff;
+    --color-formFieldText: #222;
+
+    --foreground: white;
+
+    --color-accentBg: oklch(50.5% 0.213 27.518);
+    --color-accentText: #fff;
+    --color-accentBgDarkened: oklch(57.7% 0.245 27.325);
+    --color-accentBorder: hsl(0, 0%, 100%);
+
+    /*--color-button: oklch(63.7% 0.237 25.331);
+    --color-buttonDarkened: oklch(57.7% 0.245 27.325);
+    --color-buttonLightened: oklch(70.4% 0.191 22.216);*/
+
+    --color-button: oklch(50.5% 0.213 27.518);
+    --color-buttonDarkened: oklch(44.4% 0.177 26.899);
+    --color-buttonLightened: oklch(63.7% 0.237 25.331);
+
+    --color-success: oklch(44.8% 0.119 151.328);
+
+    --color-blueBtn: oklch(48.8% 0.243 264.376);
+
+    --color-active: oklch(82.8% 0.111 230.318);
+  }
+
+  [data-theme='pink'] {
+    --color-primaryBg: #f5f5f5;
+    --color-primaryText: #222222;
+    --color-primaryLink: #0000EE;
+
+    --color-secondaryBg: oklch(89.9% 0.061 343.231);
+    --color-secondaryText: 	hsl(0, 0%, 13%);
+
+    --color-formFieldBg: #fff;
+    --color-formFieldText: #222;
+
+    --foreground: white;
+
+    --color-accentBg: oklch(65.6% 0.241 354.308);
+    --color-accentText: #fff;
+    --color-accentLink: #0000EE;
+    --color-accentBgDarkened: oklch(59.2% 0.249 0.584);
+    --color-accentBorder: 	hsl(0, 0%, 0%);
+
+    --color-button: oklch(65.6% 0.241 354.308);
+    --color-buttonDarkened: oklch(59.2% 0.249 0.584);
+    --color-buttonLightened: oklch(71.8% 0.202 349.761);
+
+    --color-success: oklch(39.3% 0.095 152.535);
+    --color-required: oklch(39.6% 0.141 25.723);
+
+    --color-blueBtn: oklch(48.8% 0.243 264.376);
+
+    --color-active: oklch(93.8% 0.127 124.321);
+  }
+}
+
+/*@layer components {*/
+  /*.accentBg {
+    @apply bg-violet-800;
+
+    @variant blue {
+      @apply bg-blue-800;
+    }
+  }*/
+
+  /*:root {
+    --background: white;
+    --foreground: black;
+    --accentBg: oklch(43.2% 0.232 292.759);
+    --accentText: #fff;
+  }
+
+  [data-theme='dark'] {
+    --background: black;
+    --foreground: white;
+    --accentBg: oklch(43.2% 0.232 292.759);
+    --accentText: #fff;
+  }
+
+  [data-theme='blue'] {
+    --background: oklch(42.4% 0.199 265.638);
+    --foreground: white;
+    --accentBg: oklch(42.4% 0.199 265.638);
+    --accentText: #fff;
+  }
+
+  [data-theme='green'] {
+    --background: oklch(44.8% 0.119 151.328);
+    --foreground: white;
+    --accentBg: oklch(44.8% 0.119 151.328);
+    --accentText: #fff;
+  }
+
+  [data-theme='red'] {
+    --background: oklch(50.5% 0.213 27.518);
+    --foreground: white;
+    --accentBg: oklch(50.5% 0.213 27.518);
+    --accentText: #fff;
+  }
+
+  [data-theme='pink'] {
+    --background: #FFD1DC;
+    --foreground: white;
+    --accentBg: #FFD1DC;
+    --accentText: #222;
+  }
+}*/
 
 /*:root {
   --background: #ffffff;

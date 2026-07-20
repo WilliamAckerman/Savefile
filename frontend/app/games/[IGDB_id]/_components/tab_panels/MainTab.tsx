@@ -5,8 +5,9 @@ import '@/app/games/[IGDB_id]/_styles/gameSection.css';
 import type Cover from '@/app/lib/types/cover';
 import type Genre from '@/app/lib/types/genre';
 import type Platform from '@/app/lib/types/platform';
+import type Theme from '@/app/lib/types/theme'
 
-function mapArray(array: Genre[] | Platform[], sort: boolean = false) {
+function mapArray(array: Genre[] | Platform[] | Theme[], sort: boolean = false) {
     let returnArray = []
     for (let i = 0; i < array.length; i++) {
         returnArray.push(array[i].name)
@@ -25,6 +26,8 @@ interface MainTabProps {
     first_release_date: number
     genres: Genre[]
     platforms: Platform[]
+
+    themes?: Theme[]
 }
 
 export default function MainTab(props: MainTabProps) {
@@ -70,7 +73,7 @@ export default function MainTab(props: MainTabProps) {
             }
 
             <div>
-                <h1 className="text-white text-2xl lg:text-3xl xl:text-4xl mb-2">
+                <h1 className="text-primaryText text-2xl lg:text-3xl xl:text-4xl mb-2">
                     {title}
                 </h1>
 
@@ -80,7 +83,7 @@ export default function MainTab(props: MainTabProps) {
 
                         {
                             game_type != "" &&
-                            <div className="bg-blue-500 rounded-sm p-1">
+                            <div className="bg-blueBtn rounded-sm p-1">
                                 <h2 className="text-white text-lg lg:text-xl">
                                     {game_type}
                                 </h2>
@@ -89,7 +92,7 @@ export default function MainTab(props: MainTabProps) {
                         
                         {
                             game_status != "" &&
-                            <div className="bg-green-500 rounded-sm p-1">
+                            <div className={`bg-success rounded-sm p-1 ${game_type != "" ? "ml-2" : ""}`}>
                                 <h2 className="text-white text-lg lg:text-xl">
                                     {game_status}
                                 </h2>
@@ -120,6 +123,13 @@ export default function MainTab(props: MainTabProps) {
                     genres && genres.length > 0 &&
                     <span className="block">
                         <strong>Genres:</strong> {mapArray(genres)}
+                    </span>
+                }
+
+                {
+                    props.themes && props.themes.length > 0 &&
+                    <span className="block">
+                        <strong>Themes:</strong> {mapArray(props.themes)}
                     </span>
                 }
 

@@ -9,6 +9,9 @@ import {
     AccordionTrigger
 } from '@/app/components/Accordion';
 
+import LogSection from './_components/LogSection';
+import { PageHeaderSection } from '@/app/components/PageHeaderSection';
+
 export const metadata: Metadata = {
     title: 'Update Log'
 }
@@ -18,95 +21,173 @@ export default function Page() {
 
     return (
         <>
-            {/*<main>*/}
-            <h1 className="main-header">Update Log</h1>
+            <PageHeaderSection
+                current_page="Update Log"
+            />
 
-            <div className="text-box mb-8">
-                <h2 className="secondary-header mb-4">Version History</h2>
+            <section className="p-4">
+                <div className="text-box bg-secondaryBg text-secondaryText"> {/* Formerly had mb-8 class */}
+                    <h2 className="secondary-header mb-4">Version History</h2>
 
-                <Accordion type="single" collapsible className="bg-violet-800">
-                    <AccordionItem value="item-1">
-                        <AccordionTrigger className="bg-violet-950 rounded-none p-2">
-                            Version 0.1
-                        </AccordionTrigger>
-                        <AccordionContent className="p-2">
-                            <h4 className={`${h4}`}>General:</h4>
-                            <p>
-                                First deployment of Savefile.
-                            </p>
+                    <Accordion type="single" collapsible> {/* Formerly had bg-violet-800 class */}
+                        <AccordionItem value="item-2">
+                            <AccordionTrigger className="rounded-none p-2"> {/* Formerly had bg-violet-950 class */}
+                                Version 1.0 (July 20, 2026)
+                            </AccordionTrigger>
+                            <AccordionContent className="p-2">
+                                <div className="mb-4">
+                                    <h4 className={`${h4} mb-2`}>
+                                        Summary
+                                    </h4>
 
-                            <h4 className={`${h4}`}>Landing Page:</h4>
-                            <ul className="list-inside list-disc mb-2">
-                                <li>
-                                    Initial implementation
-                                </li>
-                            </ul>
+                                    <p>
+                                        Added display themes, along with providing improvements to existing features.
+                                    </p>
+                                </div>
 
-                            <h4 className={`${h4}`}>Game Information:</h4>
-                            <ul className="list-inside list-disc mb-2">
-                                <li>
-                                    Initial implementation
-                                </li>
-                            </ul>
+                                <div className="mb-4">
+                                    <h4 className={`${h4} mb-2`}>
+                                        New Features
+                                    </h4>
 
-                            <h4 className={`${h4}`}>Search Page</h4>
-                            <ul className="list-inside list-disc mb-2">
-                                <li>
-                                    Initial implementation
-                                </li>
-                            </ul>
+                                    <LogSection
+                                        title={"Themes"}
+                                        listItems={["Display themes have been implemented, which make use of next-themes."]}
+                                    />
+                                </div>
 
-                            <h4 className={`${h4}`}>About Page:</h4>
-                            <ul className="list-inside list-disc mb-2">
-                                <li>
-                                    Initial implementation
-                                </li>
-                            </ul>
+                                <div className="mb-4">
+                                    <h4 className={`${h4} mb-2`}>
+                                        Existing Features
+                                    </h4>
 
-                            <h4 className={`${h4}`}>Contact Page:</h4>
-                            <ul className="list-inside list-disc mb-2">
-                                <li>
-                                    Initial implementation
-                                </li>
-                            </ul>
+                                    <LogSection
+                                        title={"Home Page"}
+                                        listItems={[
+                                            "The hero section now has two carousels: one for high-rated games and another for recently-released games."
+                                        ]}
+                                    />
 
-                            <h4 className={`${h4}`}>Guidelines Page:</h4>
-                            <ul className="list-inside list-disc mb-2">
-                                <li>
-                                    Initial implementation
-                                </li>
-                            </ul>
+                                    <LogSection
+                                        title="Search Page"
+                                        listItems={[
+                                            `Each \"filter section\" involves an accordion 
+                                            containing checkboxes, along with buttons to select 
+                                            all checkboxes or de-select all checkboxes within that 
+                                            accordion section.`
+                                        ]}
+                                    />
 
-                            <h4 className={`${h4}`}>Privacy Policy:</h4>
-                            <ul className="list-inside list-disc">
-                                <li>
-                                    Initial version of Privacy Policy.
-                                </li>
-                            </ul>
-                        </AccordionContent>
-                    </AccordionItem>
-                </Accordion>
-            </div>
+                                    <LogSection
+                                        title={"Game Information"}
+                                        listItems={[
+                                            "Game themes are now listed in the Main section",
+                                            "Game Localizations are now listed in the Additional Information section.",
+                                            "For release dates displayed in the Additional Information section: If a release date does not have a date and the release date status is not cancelled, \"TBA\" will be used in place of a date for that release date.",
+                                            "A Ports tab has been added, which displays a game's ports if applicable.",
+                                            "Fixed a bug where the information area would spill out of its container area on smaller screen sizes.",
+                                            "Adjusted how information was displayed for the Age Ratings and Additional Information sections.",
+                                            "Added a loading skeleton.",
+                                            "General style improvements."
+                                        ]}
+                                    />
 
-            {/*<section className="p-4 bg-violet-500">
-                <h2>Version 0.1</h2>
+                                    <LogSection
+                                        title="Update Log"
+                                        listItems={[
+                                            "Changed the year for Version 0.1 from 2025 to 2026."
+                                        ]}
+                                    />
 
-                <h3>Landing Page:</h3>
+                                    <LogSection
+                                        title="Header"
+                                        listItems={[
+                                            "Added a mobile menu.",
+                                            "Added a link to the update log within the navigation link section.",
+                                            "Added a display theme toggle.",
+                                            "If a user is on the About, Search, Contact, or Update Log pages, the page's respective link in the header will be of a different color to indicate an active link."
+                                        ]}
+                                    />
 
-                <h3>Game Information:</h3>
+                                    <LogSection
+                                        title="Footer"
+                                        listItems={[
+                                            "Changed the \"Links\" text to \"Navigation\""
+                                        ]}
+                                    />
+                                </div> 
 
-                <h3>Search Page:</h3>
+                                <div className="mb-4">
+                                    <h4 className={`${h4} mb-2`}>
+                                        Misc.
+                                    </h4>
 
-                <h3>About Page:</h3>
+                                    <ul className="list-inside list-disc mb-2">
+                                        <li>Added breadcrumb navigation to the following pages: About, Search, Guidelines, Privacy Policy, Contact</li>
+                                        <li>General style/functionality improvements</li>
+                                    </ul>
+                                </div> 
+                            </AccordionContent>
+                        </AccordionItem>
 
-                <h3>Contact Page:</h3>
+                        <AccordionItem value="item-1">
+                            <AccordionTrigger className="rounded-none p-2">
+                                Version 0.1 (April 25, 2026)
+                            </AccordionTrigger>
+                            <AccordionContent className="p-2">
+                                <div className="mb-4">
+                                    <h4 className={`${h4} mb-2`}>General</h4>
 
-                <h3>Guidelines Page:</h3>
+                                    <p>
+                                        First deployment of Savefile.
+                                    </p>
+                                </div>
+                            
+                                <div>
+                                    <h4 className={`${h4} mb-2`}>
+                                        Existing Features
+                                    </h4>
 
-                <h3>Privacy Policy:</h3>
-                
-            </section>*/}
-            {/*</main>*/}
+                                    <LogSection
+                                        title="Landing Page"
+                                        listItems={["Initial implementation"]}
+                                    />
+
+                                    <LogSection
+                                        title="Game Information"
+                                        listItems={["Initial implementation"]}
+                                    />
+
+                                    <LogSection
+                                        title="Search Page"
+                                        listItems={["Initial implementation"]}
+                                    />
+
+                                    <LogSection
+                                        title="About Page"
+                                        listItems={["Initial implementation"]}
+                                    />
+
+                                    <LogSection
+                                        title="Contact Page"
+                                        listItems={["Initial implementation"]}
+                                    />
+
+                                    <LogSection
+                                        title="Guidelines Page"
+                                        listItems={["Initial implementation"]}
+                                    />
+
+                                    <LogSection
+                                        title="Privacy Policy"
+                                        listItems={["Initial version of Privacy Policy."]}
+                                    />
+                                </div>
+                            </AccordionContent>
+                        </AccordionItem>
+                    </Accordion>
+                </div>
+            </section>
         </>
     )
 }

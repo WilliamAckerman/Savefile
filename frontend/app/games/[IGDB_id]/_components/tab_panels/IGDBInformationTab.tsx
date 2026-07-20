@@ -2,6 +2,7 @@ import './_styles/tabContent.css';
 import Link from 'next/link';
 
 import formatUnixTimestamp from '@/app/lib/utility_functions/formatUnixTimestamp';
+import SectionHeader from '../_general/SectionHeader';
 
 interface IGDBInformationTabProps {
     IGDB_created_at: number
@@ -17,8 +18,10 @@ export default function IGDBInformationTab(props: IGDBInformationTabProps) {
     const IGDB_url = props.IGDB_url;
 
     return (
-        <div className="w-full">
-            <h1 className="h1">IGDB Information</h1>
+        <div className="w-full max-h-[80vh]">
+            <SectionHeader
+                title="IGDB Information"
+            />
 
             {/*
                 hypes &&
@@ -55,7 +58,7 @@ export default function IGDBInformationTab(props: IGDBInformationTabProps) {
 
             {
                 IGDB_url &&
-                <Link href={IGDB_url} className="underline hover:no-underline text-blue-200 hover:text-blue-300" target="_blank" rel="noreferrer">
+                <Link href={IGDB_url} /*className="underline hover:no-underline text-blue-200 hover:text-blue-300"*/ className="text-primaryLink underline hover:no-underline" target="_blank" rel="noreferrer">
                     IGDB Website Link
                 </Link>
             }

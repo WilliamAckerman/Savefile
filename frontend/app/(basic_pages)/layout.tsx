@@ -9,15 +9,7 @@ import defaultTheme from '@/app/lib/themes/defaultTheme'
 import Header from '@/app/components/Header';
 import Footer from '@/app/components/Footer';
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import { ThemeProvider } from 'next-themes';
 
 export const metadata: Metadata = {
   title: {
@@ -34,13 +26,13 @@ export default function RootLayout({
 }>) {
   return (
     <>
-        <MantineProvider theme={defaultTheme}>
+        <ThemeProvider attribute="data-theme">
           <Header />
-          <main className="bg-slate-900 p-6 text-white">
+          <main className="bg-primaryBg text-primaryText motion-reduce:transition-none ease-in-out duration-300"> {/* Formerly had bg-slate-900 and p-6 classes */}
             {children}
           </main>
           <Footer />
-        </MantineProvider>
+        </ThemeProvider>
     </>
   );
 }

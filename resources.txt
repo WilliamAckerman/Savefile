@@ -9,8 +9,27 @@ Frontend:
 - Next.js Forms: https://www.youtube.com/watch?v=DK7WqcL9Qq4
 - https://www.reddit.com/r/nextjs/comments/1ig6a9f/error_the_default_export_is_not_a_react_component/
 
+TailwindCSS v4 and next-themes:
+- https://medium.com/@kevstrosky/theme-colors-with-tailwind-css-v4-0-and-next-themes-dark-light-custom-mode-36dca1e20419
+
+ShadCDN Tabs:
+- https://github.com/shadcn-ui/ui/issues/1105
+
+ShadCDN Carousel:
+- https://github.com/shadcn-ui/ui/issues/4045
+
+ShadCDN Accessibility:
+- https://thefrontkit.com/blogs/shadcn-ui-accessibility-audit-2026
+
+Checking for Reduced Motion Preference:
+- https://dev.to/natclark/checking-for-reduced-motion-preference-in-javascript-4lp9
+
 Python:
 - https://stackoverflow.com/questions/26895213/pymongo-using-exists
+- https://stackoverflow.com/questions/19162285/get-index-in-the-list-of-objects-by-attribute-in-python
+
+TypeScript:
+- https://www.geeksforgeeks.org/typescript/typescript-array-slice-method/
 
 CI/CD:
 - Playwright: https://www.roybakker.dev/blog/playwright-in-ci-with-github-actions-and-docker-endtoend-guide

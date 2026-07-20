@@ -3,7 +3,8 @@
 
 @layer components {
     .main-header {
-        @apply text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold mb-4;
+        /*@apply text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold mb-4;*/
+        @apply ml-4 p-4 text-2xl md:text-3xl lg:text-4xl;
     }
 
     .secondary-header {
@@ -15,10 +16,14 @@
     }
 
     .link {
-        @apply text-blue-200 underline hover:text-blue-300 hover:no-underline;
+        @apply /*text-blue-200*/ underline /*hover:text-blue-300*/ hover:no-underline;
     }
 
     /*.link:hover {
         @apply text-blue-300 no-underline;
     }*/
+
+    .theme-transition {
+        @apply motion-reduce:transition-none ease-in-out duration-300;
+    }
 }

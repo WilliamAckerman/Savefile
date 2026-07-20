@@ -9,6 +9,10 @@ import defaultTheme from '@/app/lib/themes/defaultTheme'
 import Header from '@/app/components/Header';
 import Footer from '@/app/components/Footer';
 
+import { DisplayThemeProvider } from './displayTheme';
+
+import { ThemeProvider } from 'next-themes';
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -33,15 +37,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <MantineProvider theme={defaultTheme}>
-          {/*<Header />*/}
+        <ThemeProvider attribute="data-theme" disableTransitionOnChange>
           {children}
-          {/*<Footer />*/}
-        </MantineProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

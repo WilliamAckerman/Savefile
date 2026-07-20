@@ -4,6 +4,7 @@ import './_styles/tabContent.css';
 
 import type Addon from '@/app/lib/types/addon';
 import GameGrid from '@/app/components/GameGrid';
+import SectionHeader from '../_general/SectionHeader';
 
 interface AddonTabProps {
     title: string
@@ -16,10 +17,14 @@ export default function AddonTab(props: AddonTabProps) {
     const addon_type = title.toLowerCase();
 
     return (
-        <div className="w-full">
-            <h1 className="text-white h1">
+        <div className="w-full max-h-[80vh]">
+            <SectionHeader
+                title={title}
+            />
+            {/*<h1 className="text-white h1">
                 {title}
-            </h1>
+            </h1>*/}
+            
             {
                 (addons && addons.length > 0)
                 ?

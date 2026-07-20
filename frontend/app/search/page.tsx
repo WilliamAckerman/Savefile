@@ -4,9 +4,12 @@ import SearchForm from "./_components/SearchForm";
 
 import { Suspense } from 'react';
 
+import { PageHeaderSection } from "../components/PageHeaderSection";
 import SearchResults from "./_components/SearchResults";
 
 import getSearchResults from "./_lib/getSearchResults";
+
+import SearchResultsSkeleton from "./_components/skeletons/SearchResultsSkeleton";
 
 export default async function Search(
     props: {
@@ -98,15 +101,25 @@ export default async function Search(
     return (
         <div>
             <Header />
-            <main className="bg-slate-900">
+            <main className="bg-primaryBg"> {/* Formerly had bg-slate-900 class */}
+
+                <PageHeaderSection
+                    current_page="Search"
+                />
+                    
+                {/*(<div>
+                    <h1 className="ml-4 p-4 text-primaryText text-2xl md:text-3xl lg:text-4xl">Search</h1>
+                    <hr className="text-primaryText" />
+                </div>*/}
+
                 <div className="flex flex-col lg:flex-row">
-                    <div className="flex items-center lg:w-[40%]">
+                    <div className="flex items-center lg:items-start lg:w-[40%]">
                         <SearchForm 
                         />
                     </div>
 
-                    <div className="flex items-center lg:w-[60%]">
-                        <Suspense fallback={<p>Loading search results...</p>}>
+                    <div className="flex items-center lg:items-start lg:w-[60%]">
+                        <Suspense fallback={/*<p>Loading search results...</p>*/<SearchResultsSkeleton />}>
                         {
                             gameData?.success == true ?
                             <SearchResults 
@@ -115,7 +128,7 @@ export default async function Search(
                                 currentPage={currentPage}
                             />
                             :
-                            <p>Failed to get search results.</p>
+                            <p className="text-primaryText">Failed to get search results.</p>
                         }
                         </Suspense>
                     </div>

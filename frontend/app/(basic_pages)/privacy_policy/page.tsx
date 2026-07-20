@@ -10,25 +10,34 @@ import {
     AccordionTrigger
 } from '@/app/components/Accordion';
 
+import { PageHeaderSection } from '@/app/components/PageHeaderSection';
+
 export const metadata: Metadata = {
     title: 'Privacy Policy'
 }
 
 export default function Page() {
-    const accordionTrigger = "bg-violet-950 rounded-none p-2";
-    const link = "underline hover:no-underline text-blue-200 hover:text-blue-300 break-word";
+    const accordionTrigger = "rounded-none p-2"; // Formerly had bg-violet-950 class
+    //const link = "underline hover:no-underline text-blue-200 hover:text-blue-300 break-word";
+    const link = "underline hover:no-underline text-primaryLink break-word";
 
     return (
         <>
-            {/*<main>*/}
+            {/*<div>
                 <h1 className="main-header">Privacy Policy</h1>
+                <hr />
+            </div>*/}
+            <PageHeaderSection
+                current_page="Privacy Policy"
+            />
 
-                <div className="text-box bg-violet-800 mb-8">
+            <section className="p-4">
+                <div className="text-box bg-secondaryBg text-secondaryText"> {/* Formerly had bg-violet-800 and mb-8 classes */}
                     <h2 className="secondary-header mb-4">Savefile Privacy Policy</h2>
-                    <p className="mb-2">Effective Date: April 25, 2026</p>
+                    <p className="mb-2">Effective Date: July 20, 2026</p>
                     <hr className="mb-2" />
 
-                    <Accordion type="single" collapsible className="bg-violet-800">
+                    <Accordion type="multiple"> {/* Originally had type="single", collapsible, and bg-violet-800 class */}
 
                         {/* 1. Overview */}
                         <AccordionItem value="item-1">
@@ -127,9 +136,17 @@ export default function Page() {
                                     Currently, there is no underlying database dedicated to storing personal data of website visitors.
                                 </p>
 
-                                <p>
+                                <p className="mt-2 mb-2">
                                     When you make a submission using the contact form, your name and email address are used to construct an email message, which is 
                                     sent to and stored in my Gmail inbox at the following email address: williamjohnackerman@gmail.com.
+                                </p>
+
+                                {/* Added information about next-themes */}
+                                <p>
+                                    Savefile&apos;s display theme feature involves the use of next-themes, 
+                                    which makes use of local storage. Next-themes is used when you use the display theme 
+                                    selector located in the header. If you would like to remove your theme preference from local storage, 
+                                    you can click the button labeled {"\"Reset Theme \""} in the header to the right of the display theme selector.
                                 </p>
                             </AccordionContent>
                         </AccordionItem>
@@ -255,7 +272,7 @@ export default function Page() {
                         </AccordionItem>
                     </Accordion>
                 </div>
-            {/*</main>*/}
+            </section>
         </>
     )
 }

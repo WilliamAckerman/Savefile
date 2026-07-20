@@ -15,13 +15,11 @@ getSimilarGamesRouter.post('/', jsonParser, async (_req: Request, res: Response)
     const IGDB_id = _req.body.IGDB_id ? _req.body.IGDB_id : null;
 
     if (!IGDB_id) {
-        res.status(500).json({
+        return res.status(500).json({
             'success': false,
             'error': 'Error getting similar games: No IGDB id was provided.'
         })
     }
-
-    //console.log(IGDB_id);
 
     try {
         const gamesCollection = db.collection(process.env.MONGODB_GAME_COLLECTION_NAME!);
@@ -53,11 +51,7 @@ getSimilarGamesRouter.post('/', jsonParser, async (_req: Request, res: Response)
                 .toArray()
         );
 
-        //console.log(game)
-        //console.log(game[0])
         const gameObjectId = game[0]?._id;
-        //console.log(game[0]?._id)
-        //console.log(gameObjectId)
 
         const gameObjectIdString = gameObjectId.toString()
         //console.log(gameObjectId.toString())
@@ -67,7 +61,7 @@ getSimilarGamesRouter.post('/', jsonParser, async (_req: Request, res: Response)
                 "$search": {
                     index: SIMILAR_GAMES_INDEX,
                     "compound": {
-                        "must":[{
+                        "should":[{
                             "moreLikeThis": {
                                 "like": game
                             }
@@ -77,11 +71,11 @@ getSimilarGamesRouter.post('/', jsonParser, async (_req: Request, res: Response)
                                 /*"path": "_id",
                                 "value": gameObjectIdString //new ObjectId (gameObjectId.toString())*/
 
-                                /*"path": "IGDB_id",
-                                "value": Number(IGDB_id)*/
+                                "path": "IGDB_id",
+                                "value": Number(IGDB_id)
 
-                                "path": "_id",
-                                "value": gameObjectId
+                                /*"path": "_id",
+                                "value": gameObjectId*/
                             }
                         }]
                     }
@@ -100,22 +94,20 @@ getSimilarGamesRouter.post('/', jsonParser, async (_req: Request, res: Response)
             }
         ]).toArray()
 
-        //console.log(similarGames);
-
         if (similarGames.length < 1) {
-            res.status(200).json({
+            return res.status(200).json({
                 'success': true,
                 'message': 'No games were found for this IGDB id.'
             });
         } else {
-            res.status(200).json({
+            return res.status(200).json({
                 'success': true,
                 'games': similarGames
             })
         }
 
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             'success': false,
             'error': `Error finding similar games: ${error}`
         });

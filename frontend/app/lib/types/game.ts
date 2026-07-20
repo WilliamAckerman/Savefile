@@ -1,9 +1,10 @@
 import type Addon from '@/app/lib/types/addon';
 import type AgeRating from '@/app/lib/types/_age_ratings/ageRating';
 import type AlternativeTitle from '@/app/lib/types/alternativeTitle';
-import type Artwork from '@/app/lib/types/artwork';
+import type ArtworkType from '@/app/lib/types/artworkType';
 import type Cover from '@/app/lib/types/cover';
 import type GameEngine from './gameEngine';
+import type GameLocalization from './gameLocalization';
 import type GameMode from '@/app/lib/types/gameMode';
 import type GameStatus from './gameStatus';
 import type GameTimeToBeat from '@/app/lib/types/gameTimeToBeat';
@@ -12,12 +13,12 @@ import type Genre from '@/app/lib/types/genre';
 import type InvolvedCompany from '@/app/lib/types/involvedCompany';
 import type Keyword from '@/app/lib/types/keyword';
 import type LanguageSupport from './_language_supports/languageSupport';
-import type LanguageSupportArray from './_language_supports/languageSupportArray';
 import type MultiplayerMode from './multiplayerMode';
 import type Platform from '@/app/lib/types/platform';
 import type PlayerPerspective from '@/app/lib/types/playerPerspective';
 import type ReleaseDate from '@/app/lib/types/_release_dates/releaseDate';
 import type Screenshot from '@/app/lib/types/screenshot';
+import type Theme from '@/app/lib/types/theme'
 import type Video from '@/app/lib/types/video';
 import type Website from '@/app/lib/types/_website/website';
 
@@ -47,10 +48,12 @@ type Game = {
     game_engines?: GameEngine[]
     game_modes?: GameMode[]
     multiplayer_modes?: MultiplayerMode[]
-    language_supports?: LanguageSupportArray
+    /*language_supports?: LanguageSupportArray*/
+    language_supports?: LanguageSupport[]
     player_perspectives?: PlayerPerspective[]
     screenshots?: Screenshot[]
-    artworks?: Artwork[]
+    //artworks?: Artwork[]
+    artwork_types?: ArtworkType[]
     videos?: Video[]
     age_ratings?: AgeRating[]
     websites?: Website[]
@@ -61,11 +64,14 @@ type Game = {
     expansions?: Addon[]
     remasters?: Addon[]
     remakes?: Addon[]
+    ports?: Addon[]
     parent_game?: Addon
     standalone_expansions?: Addon[]
     game_status?: GameStatus
     game_type?: GameType
     first_release_date?: number
+    game_localizations?: GameLocalization[]
+    themes?: Theme[]
 }
 
 export default Game;

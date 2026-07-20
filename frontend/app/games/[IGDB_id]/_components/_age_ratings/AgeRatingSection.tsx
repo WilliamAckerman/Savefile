@@ -11,10 +11,10 @@ export default function AgeRatingSection(props: AgeRatingSectionProps) {
     const descriptors = props.descriptors;
     const title = props.title;
 
-    const h2 = "mb-4 text-white text-lg md:text-xl lg:text-3xl";
+    const h2 = "mb-4 text-lg md:text-xl lg:text-3xl";
 
     return (
-        <div className="p-2 bg-violet-700 rounded-sm">
+        <div className="p-4 bg-secondaryBg text-secondaryText rounded-sm shadow-sm mb-4"> {/* Formerly had bg-violet-700 class */}
             <h2 className={h2}>{title} Rating</h2>
 
             <p><strong>Rated {rating}</strong></p>
@@ -25,7 +25,7 @@ export default function AgeRatingSection(props: AgeRatingSectionProps) {
                 <ul className="list-inside list-disc">
                     {descriptors.map((descriptor) => {
                         return (
-                            <li key={`${descriptor.IGDB_content_description_id}${title}`} className="text-white">{descriptor.description}</li>
+                            <li key={`${descriptor.IGDB_content_description_id}${title}`}>{descriptor.description}</li>
                         )
                     })}
                 </ul>

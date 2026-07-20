@@ -1,5 +1,5 @@
 function getRatingColor(rating: number) {
-    if (rating >= 70) return "bg-green-500";
+    if (rating >= 70) return "bg-success";
     if (rating >= 50) return "bg-yellow-500";
     return "bg-red-500";
 }
@@ -20,8 +20,8 @@ export default function RatingSection(props: RatingSectionProps) {
 
     return (
         <div className="p-4">
-            <div className={`${ratingColor} mx-auto flex items-center border-white-2px border-sold w-[15vh] h-[15vh] rounded-xl`}>
-                <span className="-top-50 -left-50 text-center mx-auto text-xl md:text-2xl lg:text-3xl">
+            <div className={`${ratingColor} mx-auto flex items-center border-white-2px border-sold w-[15vh] h-[15vh] rounded-xl mb-2`}>
+                <span className="-top-50 -left-50 text-center mx-auto text-xl md:text-2xl lg:text-3xl text-white">
                     {fixedRating}
                 </span>
             </div>

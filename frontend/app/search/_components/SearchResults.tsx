@@ -80,10 +80,10 @@ async function SearchResults(props: SearchResultsProps) {
     return (
         <section 
             className="
-                bg-slate-900 
+                bg-primaryBg
                 w-full
                 p-4
-            "
+            " // Formerly had bg-slate-900 class
         >
             <div>
                 {
@@ -92,7 +92,7 @@ async function SearchResults(props: SearchResultsProps) {
                     <>
                     <h2 
                         className="
-                            text-white
+                            text-primaryText
                             mb-4
                             text-xl
                             md:text-2xl
@@ -101,7 +101,7 @@ async function SearchResults(props: SearchResultsProps) {
                     >
                         Search Results
                     </h2>
-                    <p className="text-white md:text-lg lg:text-xl">
+                    <p className="text-primaryText md:text-lg lg:text-xl">
                         Showing {games.length} out of {gameCount} results.
                     </p>
                     {/*<div 
@@ -174,10 +174,10 @@ async function SearchResults(props: SearchResultsProps) {
                     </>
                     :
                     <div>
-                        <p className="mb-2 text-white text-center text-xl md:text-2xl lg:text-3xl">
+                        <p className="mb-2 text-primaryText text-xl md:text-2xl lg:text-3xl">
                             No games were found.
                         </p>
-                        <p className="text-white text-center text-lg md:text-xl lg:text-2xl">
+                        <p className="text-primaryText text-lg md:text-xl lg:text-2xl">
                             Try searching for something else!
                         </p>
                     </div>

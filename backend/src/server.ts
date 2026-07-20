@@ -12,6 +12,8 @@ import { getSimilarGamesRouter } from './routes/get_similar_games.js';
 import { sendContactMessageRouter } from "./routes/send_contact_message.js"
 import { altchaChallengeRouter } from "./routes/altcha_challenge.js"
 
+import { getHomePageGamesRouter } from './routes/get_home_page_games.js';
+
 dotenv.config()
 
 // Initialize Express app
@@ -30,11 +32,13 @@ app.get('/', (req: Request, res: Response) => {
 app.use("/get_display_games", getDisplayGamesRouter)
 app.use("/get_game_data", getGameDataRouter)
 app.use("/get_game_search_results", getGameSearchResultsRouter);
-app.use("/get_game_add_ons", getGameAddOnsRouter);
+//app.use("/get_game_add_ons", getGameAddOnsRouter);
 app.use("/get_similar_games", getSimilarGamesRouter);
 
 app.use("/send_contact_message", sendContactMessageRouter)
 app.use("/altcha_challenge", altchaChallengeRouter)
+
+app.use("/get_home_page_games", getHomePageGamesRouter);
 
 export default app;
 

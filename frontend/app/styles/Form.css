@@ -3,7 +3,7 @@
 
 @layer components {
     .form {
-        @apply bg-neutral-50 text-black rounded-sm shadow-sm p-4 m-4;
+        @apply bg-neutral-50 text-black rounded-sm shadow-sm p-4 /*m-4*/;
     }
 
     .form-header {
@@ -31,19 +31,19 @@
     }
 
     .form-submit-btn {
-        @apply bg-violet-500 text-white p-2 rounded-sm cursor-pointer;
+        @apply /*bg-violet-500*/ text-white p-2 rounded-sm cursor-pointer;
     }
 
-    .form-submit-btn:active, .form-submit-btn:hover {
+    /*.form-submit-btn:active, .form-submit-btn:hover {
         @apply bg-violet-600;
-    }
+    }*/
 
     .form-submit-btn:disabled {
-        @apply bg-violet-400 cursor-not-allowed;
+        @apply /*bg-violet-400*/ cursor-not-allowed;
     }
 
     .form-select {
-        @apply block border border-solid rounded-sm mb-4 w-full p-2;
+        @apply block border border-solid rounded-sm mb-4 w-full p-2 cursor-pointer;
     }
 
     .required {

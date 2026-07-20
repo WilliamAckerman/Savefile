@@ -4,6 +4,8 @@ import Image from 'next/image';
 
 import type Screenshot from '@/app/lib/types/screenshot';
 
+import SectionHeader from '../_general/SectionHeader';
+
 interface ScreenshotsTabProps {
     screenshots: Screenshot[]
 }
@@ -12,10 +14,10 @@ export default function ScreenshotsTab(props: ScreenshotsTabProps) {
     const screenshots: Screenshot[] = props.screenshots;
 
     return (
-        <div>
-            <h1 className="text-white h1">
-                Screenshots
-            </h1>
+        <div className="w-full max-h-[80vh]">
+            <SectionHeader
+                title="Screenshots"
+            />
 
             <div className="flex flex-row flex-wrap p-4">
                 {
@@ -36,6 +38,8 @@ export default function ScreenshotsTab(props: ScreenshotsTabProps) {
                                         alt={`Screenshot with URL of ${screenshotUrl}`}
                                         width={screenshot.width}
                                         height={screenshot.height}
+                                        
+                                        quality={100}
                                     />
                                 </Link>
                             </div>

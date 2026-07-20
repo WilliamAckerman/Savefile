@@ -1,5 +1,6 @@
 import './_styles/tabContent.css';
 import RatingSection from '@/app/games/[IGDB_id]/_components/_ratings/RatingSection';
+import SectionHeader from '../_general/SectionHeader';
 
 interface RatingsTabProps {
     rating?: number
@@ -19,10 +20,15 @@ export default function RatingsTab(props: RatingsTabProps) {
     const totalRatingCount = props.total_rating_count;
 
     return (
-        <div className="w-full">
-            <h1 className="text-white h1">
+        <div className="w-full max-h-[80vh]">
+
+            <SectionHeader
+                title="Ratings"
+            />
+            {/*<h1 className="text-white h1 mb-4">
                 Ratings
             </h1>
+            <hr className="mb-4" />*/}
 
             <div className="flex flex-row flex-wrap items-center justify-evenly">
                 {

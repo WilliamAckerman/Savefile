@@ -1,4 +1,5 @@
 import type InvolvedCompany from '@/app/lib/types/involvedCompany';
+import SectionHeader from '../_general/SectionHeader';
 
 /*function createArray(array, condition) {
     const returnArray = [];
@@ -29,10 +30,13 @@ export default function InvolvedCompaniesTab(props: InvolvedCompaniesTabProps) {
     const involvedCompanies = props.involved_companies;
 
     return (
-        <div className="w-full">
-            <h1 className="mb-4 text-white text-xl md:text-2xl lg:text-4xl">
+        <div className="w-full max-h-[80vh]">
+            <SectionHeader
+                title="Involved Companies"
+            />
+            {/*<h1 className="mb-4 text-white text-xl md:text-2xl lg:text-4xl">
                 Involved Companies
-            </h1>
+            </h1>*/}
 
             <div className="flex flex-row flex-wrap p-4 mx-auto">
                 {

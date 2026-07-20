@@ -23,7 +23,7 @@ export default function TabBackground(props: TabBackgroundProps) {
                 backgroundPosition: 'center'
             }}
         >
-            <div className={`gameSectionBox ${centerCss}`}>
+            <div className={`gameSectionBox ${centerCss} bg-primaryBg text-primaryText`}>
                 {props.children}
             </div>
         </div>

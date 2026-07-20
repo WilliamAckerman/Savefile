@@ -1,8 +1,6 @@
 "use client"
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Tabs } from '@mantine/core';
 import classes from '@/app/games/[IGDB_id]/_styles/GameSideNav.module.css';
-import Link from 'next/link'
 
 import TabBackground from '@/app/games/[IGDB_id]/_components/tab_panels/TabBackground';
 import MainTab from '@/app/games/[IGDB_id]/_components/tab_panels/MainTab';
@@ -21,8 +19,9 @@ import IGDBInformationTab from '@/app/games/[IGDB_id]/_components/tab_panels/IGD
 import AddonTab from './tab_panels/AddonTab';
 
 import type Game from '@/app/lib/types/game';
-import type Addon from '@/app/lib/types/addon';
 import type SimilarGames from '@/app/lib/types/similarGames';
+
+import ReturnButton from './_general/ReturnButton';
 
 import '@/app/games/[IGDB_id]/_styles/gameSection.css';
 
@@ -35,15 +34,12 @@ interface GameInformationProps {
     similarGameData: SimilarGames
 }
 
-import { useMantineTheme } from '@mantine/core';
-
 export default function GameInformation(props: GameInformationProps) {
     const router = useRouter();
     const data = props.data
 
     const similarGameData = props.similarGameData
     //const selectedValue = props.selectedValue ? props.selectedValue : "main";
-    //console.log(data)
 
     const largeScreen = useMediaQuery('(min-width: 991px)');
 
@@ -51,12 +47,8 @@ export default function GameInformation(props: GameInformationProps) {
     const tab = searchParams.get('tab');
     const selectedValue = tab || "main";
 
-    //console.log("Tab:", tab);
-    //console.log("Selected:", selectedValue);
-
-    const theme = useMantineTheme();
-    //console.log("Theme:");
-    //console.log(theme);
+    //const tabStyle = "shadCdnTab hover:bg-accentBgDarkened active:bg-accentBgDarkened text-accentText border-accentBorder";
+    const tabStyle = "shadCdnTab hover:bg-accentBgDarkened aria-selected:bg-accentBgDarkened text-accentText border-l-accentBorder border-r-accentBorder";
 
     const generalInfoCheck = (
         data.storyline || 
@@ -78,7 +70,9 @@ export default function GameInformation(props: GameInformationProps) {
         data.player_perspectives ||
         data.alternative_titles ||
         data.game_engines ||
-        data.release_dates
+        data.release_dates ||
+
+        data.game_localizations
     )
 
     const validTabs = ["main"];
@@ -88,7 +82,8 @@ export default function GameInformation(props: GameInformationProps) {
     //if (data.involved_companies) validTabs.push("involved_companies");
     validTabs.push("involved_companies");
     if (data.screenshots) validTabs.push("screenshots");
-    if (data.artworks) validTabs.push("artworks");
+    //if (data.artworks) validTabs.push("artworks");
+    if (data.artwork_types) validTabs.push("artworks");
     if (data.videos) validTabs.push("videos");
     validTabs.push("age_ratings");
     if (additionalInformationCheck) validTabs.push("additional_information");
@@ -150,42 +145,32 @@ export default function GameInformation(props: GameInformationProps) {
                 data-orientation={largeScreen ? "vertical" : "horizontal"}
                 className="group/tabs flex flex-col lg:flex-row"
 
-                onChange={(value) => {
-                    //if (validTabs.includes(String(value))) {
-                    //console.log("Changed")
-                        router.push(`?tab=${value}`)
-                    //}
-                }}
+                // Help from https://github.com/shadcn-ui/ui/issues/1105
+                onValueChange={(value) => handleTabChange(String(value))}
             >
                 <TabsPrimitive.List
                     data-slot="tabs-list"
-                    className="bg-violet-500 lg:max-w-[20vw] w-[100%] overflow-x-auto shadCdnTabList"
-                >
-                    <div className="bg-violet-500 text-white mt-2 mb-2">
-                        <Link className="ml-4 mb-2 mt-2" href="/">
-                            <button
-                                type="button"
-                                className="bg-blue-500 hover:bg-blue-600 rounded-sm shadow-sm p-1 cursor-pointer"
-                            >
-                                Go to Home Page
-                            </button>
-                        </Link>
+                    className="bg-accentBg lg:max-w-[20vw] w-[100%] overflow-x-auto shadCdnTabList"
+                > {/* Formerly had bg-violet-500 */}
+                    <div className="bg-primaryBg p-1">
+                        <ReturnButton
+                            link="/"
+                            text="Go to Home Page"
+                        />
+
+                        <ReturnButton
+                            link="/search"
+                            text="Go to Search Page"
+                            icon="search"
+                        />
                     </div>
 
-                    <div className="bg-violet-500 text-white mt-2 mb-2">
-                        <Link className="ml-4 mb-2 mt-2" href="/search">
-                            <button
-                                type="button"
-                                className="bg-blue-500 hover:bg-blue-600 rounded-sm shadow-sm p-1 cursor-pointer"
-                            >
-                                Go to Search
-                            </button>
-                        </Link>
-                    </div>
+                    <nav>
 
                     <TabsPrimitive.Trigger 
                         value="main"
-                        className="shadCdnTab"
+                        //className="shadCdnTab hover:bg-accentBgDarkened text-accentText"
+                        className={`${tabStyle}`}
 
                         onClick={() => handleTabChange("main")}
                     >
@@ -194,7 +179,8 @@ export default function GameInformation(props: GameInformationProps) {
 
                     <TabsPrimitive.Trigger 
                         value="general_information"
-                        className="shadCdnTab"
+                        //className="shadCdnTab hover:bg-accentBgDarkened text-accentText"
+                        className={`${tabStyle}`}
 
                         onClick={() => handleTabChange("general_information")}
                     >
@@ -212,7 +198,8 @@ export default function GameInformation(props: GameInformationProps) {
                         ) &&
                         <TabsPrimitive.Trigger 
                             value="ratings"
-                            className="shadCdnTab"
+                            //className="shadCdnTab hover:bg-accentBgDarkened text-accentText"
+                            className={`${tabStyle}`}
 
                             onClick={() => handleTabChange("ratings")}
                         >
@@ -224,7 +211,8 @@ export default function GameInformation(props: GameInformationProps) {
                         data.language_supports &&
                         <TabsPrimitive.Trigger 
                             value="language_supports"
-                            className="shadCdnTab"
+                            //className="shadCdnTab hover:bg-accentBgDarkened text-accentText"
+                            className={`${tabStyle}`}
 
                             onClick={() => handleTabChange("language_supports")}
                         >
@@ -236,7 +224,8 @@ export default function GameInformation(props: GameInformationProps) {
                         data.involved_companies &&
                         <TabsPrimitive.Trigger 
                             value="involved_companies"
-                            className="shadCdnTab"
+                            //className="shadCdnTab hover:bg-accentBgDarkened text-accentText"
+                            className={`${tabStyle}`}
 
                             onClick={() => handleTabChange("involved_companies")}
                         >
@@ -248,7 +237,8 @@ export default function GameInformation(props: GameInformationProps) {
                         data.screenshots &&
                         <TabsPrimitive.Trigger 
                             value="screenshots"
-                            className="shadCdnTab"
+                            //className="shadCdnTab hover:bg-accentBgDarkened text-accentText"
+                            className={`${tabStyle}`}
 
                             onClick={() => handleTabChange("screenshots")}
                         >
@@ -257,10 +247,11 @@ export default function GameInformation(props: GameInformationProps) {
                     }
 
                     {
-                        data.artworks &&
+                        data.artwork_types &&
                         <TabsPrimitive.Trigger 
                             value="artworks"
-                            className="shadCdnTab"
+                            //className="shadCdnTab hover:bg-accentBgDarkened text-accentText"
+                            className={`${tabStyle}`}
 
                             onClick={() => handleTabChange("artworks")}
                         >
@@ -272,7 +263,8 @@ export default function GameInformation(props: GameInformationProps) {
                         data.videos &&
                         <TabsPrimitive.Trigger 
                             value="videos"
-                            className="shadCdnTab"
+                            //className="shadCdnTab hover:bg-accentBgDarkened text-accentText"
+                            className={`${tabStyle}`}
 
                             onClick={() => handleTabChange("videos")}
                         >
@@ -284,7 +276,8 @@ export default function GameInformation(props: GameInformationProps) {
                         data.age_ratings &&
                         <TabsPrimitive.Trigger 
                             value="age_ratings"
-                            className="shadCdnTab"
+                            //className="shadCdnTab hover:bg-accentBgDarkened text-accentText"
+                            className={`${tabStyle}`}
 
                             onClick={() => handleTabChange("age_ratings")}
                         >
@@ -296,7 +289,8 @@ export default function GameInformation(props: GameInformationProps) {
                         additionalInformationCheck &&
                         <TabsPrimitive.Trigger 
                             value="additional_information"
-                            className="shadCdnTab"
+                            //className="shadCdnTab hover:bg-accentBgDarkened text-accentText"
+                            className={`${tabStyle}`}
 
                             onClick={() => handleTabChange("additional_information")}
                         >
@@ -308,7 +302,8 @@ export default function GameInformation(props: GameInformationProps) {
                         data.websites &&
                         <TabsPrimitive.Trigger 
                             value="websites"
-                            className="shadCdnTab"
+                            //className="shadCdnTab hover:bg-accentBgDarkened text-accentText"
+                            className={`${tabStyle}`}
 
                             onClick={() => handleTabChange("websites")}
                         >
@@ -320,7 +315,8 @@ export default function GameInformation(props: GameInformationProps) {
                         data.keywords &&
                         <TabsPrimitive.Trigger 
                             value="keywords"
-                            className="shadCdnTab"
+                            //className="shadCdnTab hover:bg-accentBgDarkened text-accentText"
+                            className={`${tabStyle}`}
 
                             onClick={() => handleTabChange("keywords")}
                         >
@@ -330,7 +326,8 @@ export default function GameInformation(props: GameInformationProps) {
 
                     <TabsPrimitive.Trigger 
                         value="igdb_information"
-                        className="shadCdnTab"
+                        //className="shadCdnTab hover:bg-accentBgDarkened text-accentText"
+                        className={`${tabStyle}`}
 
                         onClick={() => handleTabChange("igdb_information")}
                     >
@@ -341,7 +338,8 @@ export default function GameInformation(props: GameInformationProps) {
                         data.dlcs &&
                         <TabsPrimitive.Trigger
                             value="dlcs"
-                            className="shadCdnTab"
+                            //className="shadCdnTab hover:bg-accentBgDarkened text-accentText"
+                            className={`${tabStyle}`}
 
                             onClick={() => handleTabChange("dlcs")}
                         >
@@ -353,7 +351,8 @@ export default function GameInformation(props: GameInformationProps) {
                         data.expansions &&
                         <TabsPrimitive.Trigger
                             value="expansions"
-                            className="shadCdnTab"
+                            //className="shadCdnTab hover:bg-accentBgDarkened text-accentText"
+                            className={`${tabStyle}`}
 
                             onClick={() => handleTabChange("expansions")}
                         >
@@ -365,7 +364,8 @@ export default function GameInformation(props: GameInformationProps) {
                         data.standalone_expansions &&
                         <TabsPrimitive.Trigger
                             value="standalone_expansions"
-                            className="shadCdnTab"
+                            //className="shadCdnTab hover:bg-accentBgDarkened text-accentText"
+                            className={`${tabStyle}`}
 
                             onClick={() => handleTabChange("standalone_expansions")}
                         >
@@ -377,7 +377,8 @@ export default function GameInformation(props: GameInformationProps) {
                         data.expanded_games &&
                         <TabsPrimitive.Trigger
                             value="expanded_games"
-                            className="shadCdnTab"
+                            //className="shadCdnTab hover:bg-accentBgDarkened text-accentText"
+                            className={`${tabStyle}`}
 
                             onClick={() => handleTabChange("expanded_games")}
                         >
@@ -389,7 +390,8 @@ export default function GameInformation(props: GameInformationProps) {
                         data.remasters &&
                         <TabsPrimitive.Trigger
                             value="remasters"
-                            className="shadCdnTab"
+                            //className="shadCdnTab hover:bg-accentBgDarkened text-accentText"
+                            className={`${tabStyle}`}
 
                             onClick={() => handleTabChange("remasters")}
                         >
@@ -401,7 +403,8 @@ export default function GameInformation(props: GameInformationProps) {
                         data.remakes &&
                         <TabsPrimitive.Trigger
                             value="remakes"
-                            className="shadCdnTab"
+                            //className="shadCdnTab hover:bg-accentBgDarkened text-accentText"
+                            className={`${tabStyle}`}
 
                             onClick={() => handleTabChange("remakes")}
                         >
@@ -410,10 +413,23 @@ export default function GameInformation(props: GameInformationProps) {
                     }
 
                     {
+                        data.ports &&
+                        <TabsPrimitive.Trigger
+                            value="ports"
+                            className={`${tabStyle}`}
+
+                            onClick={() => handleTabChange("ports")}
+                        >
+                            Ports
+                        </TabsPrimitive.Trigger>
+                    }
+
+                    {
                         data.parent_game &&
                         <TabsPrimitive.Trigger
                             value="parent_game"
-                            className="shadCdnTab"
+                            //className="shadCdnTab hover:bg-accentBgDarkened text-accentText"
+                            className={`${tabStyle}`}
 
                             onClick={() => handleTabChange("parent_game")}
                         >
@@ -423,12 +439,15 @@ export default function GameInformation(props: GameInformationProps) {
 
                     <TabsPrimitive.Trigger
                         value="similar_games"
-                        className="shadCdnTab"
+                        //className="shadCdnTab hover:bg-accentBgDarkened text-accentText"
+                        className={`${tabStyle}`}
 
                         onClick={() => handleTabChange("similar_games")}
                     >
                         Similar Games
                     </TabsPrimitive.Trigger>
+
+                    </nav>
                 </TabsPrimitive.List>
 
                 <TabsPrimitive.Content
@@ -445,10 +464,8 @@ export default function GameInformation(props: GameInformationProps) {
                             cover={data.cover ? data.cover : null}
                             first_release_date={data.first_release_date ? data.first_release_date : -1}
                             genres={data.genres ? data.genres : []}
+                            themes={data.themes || []}
                             platforms={data.platforms ? data.platforms : []}
-
-                            //summary={data.summary ? data.summary : ""}
-                            //storyline={data.storyline ? data.storyline : ""}
                         />
                     </TabBackground>
                 </TabsPrimitive.Content>
@@ -520,11 +537,11 @@ export default function GameInformation(props: GameInformationProps) {
                 }
 
                 {
-                    data.artworks &&
+                    data.artwork_types &&
                     <TabsPrimitive.Content value="artworks">
                         <TabBackground cover={data.cover ? data.cover : null}>
                             <ArtworksTab
-                                artworks={data.artworks}
+                                artwork_types={data.artwork_types}
                             />
                         </TabBackground>
                     </TabsPrimitive.Content>
@@ -563,6 +580,8 @@ export default function GameInformation(props: GameInformationProps) {
                                 alternative_names={data.alternative_titles}
                                 game_engines={data.game_engines}
                                 release_dates={data.release_dates}
+
+                                game_localizations={data.game_localizations}
 
                                 hypes={data.hypes}
                                 created_at={data.created_at}
@@ -672,6 +691,18 @@ export default function GameInformation(props: GameInformationProps) {
                             <AddonTab
                                 title="Remakes"
                                 addons={data.remakes}
+                            />
+                        </TabBackground>
+                    </TabsPrimitive.Content>
+                }
+
+                {
+                    data.ports &&
+                    <TabsPrimitive.Content value="ports">
+                        <TabBackground cover={data.cover ? data.cover : null}>
+                            <AddonTab
+                                title="Ports"
+                                addons={data.ports}
                             />
                         </TabBackground>
                     </TabsPrimitive.Content>

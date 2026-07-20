@@ -11,11 +11,12 @@ const getGameSearchResultsRouter = express.Router();
 getGameSearchResultsRouter.use(express.json());
 
 function checkIfTrue(field: string) {
-    if (field === 'true') {
+    return field === 'true'
+    /*if (field === 'true') {
         return true;
     } else {
         return false;
-    }
+    }*/
 }
 
 function appendToArray(array: number[], field: boolean, id: number) {
@@ -213,21 +214,12 @@ getGameSearchResultsRouter.get('/', async (_req: Request, res: Response) => {
 
     // $and is only applied if filtering by two
     if (findArray.length > 1) {
-        //console.log("findArray length > 1")
-        //console.log(findArray)
         queryObject = { "$and": findArray };
-        //queryObject = {}
     } else if (findArray.length == 1) {
-        //console.log("findArray length = 1")
-        //console.log(findArray[0])
         queryObject = findArray[0];
-        //queryObject = {}
     } else {
         queryObject = {};
     }
-    //console.log("Query object")
-    //console.log(queryObject)
-    //console.log(JSON.stringify(queryObject))
 
     const pipeline = [];
 
@@ -294,7 +286,7 @@ getGameSearchResultsRouter.get('/', async (_req: Request, res: Response) => {
         const gamesCollection = db.collection(process.env.MONGODB_GAME_COLLECTION_NAME!)
 
         let games; // Stores the games returned
-        let gameCount;
+        //let gameCount;
         //console.log(search)
 
         /*if (search.trim() == "") {
@@ -318,7 +310,7 @@ getGameSearchResultsRouter.get('/', async (_req: Request, res: Response) => {
                 await gamesCollection.aggregate(pipeline).toArray()
             ) //as Game[];
 
-            gameCount = games.length;
+            //gameCount = games.length;
 
             //console.log("Games")
             //console.log(JSON.stringify(games))
@@ -326,9 +318,18 @@ getGameSearchResultsRouter.get('/', async (_req: Request, res: Response) => {
             //console.log("Game count")
             //console.log(gameCount)
         //}
+        
+        let gameCount: number = 0;
+        let pageCount: number = 0;
+
+        if (games.length > 0 && games[0]?.metadata && games[0].metadata.length > 0 && games[0]?.metadata[0]?.totalCount) {
+            gameCount = games[0]?.metadata[0].totalCount
+            pageCount = Math.ceil(games[0]?.metadata[0].totalCount / limit);
+        }
 
         //const pageCount: number = Math.ceil(Number(gameCount) / limit);
-        const pageCount: number = Math.ceil(games[0]?.metadata[0].totalCount / limit);
+
+        //const pageCount: number = Math.ceil(games[0]?.metadata[0].totalCount / limit);
 
         /*res.status(200).json({
             success: true,
@@ -339,7 +340,10 @@ getGameSearchResultsRouter.get('/', async (_req: Request, res: Response) => {
         res.status(200).json({
             success: true,
             games: games[0]?.data,
-            gameCount: games[0]?.metadata[0].totalCount,
+
+            //gameCount: games[0]?.metadata[0].totalCount,
+            gameCount: gameCount,
+
             pageCount: pageCount
         });
     } catch (error) {

@@ -1,6 +1,7 @@
 import os
 import asyncio
 import json
+import datetime
 import time
 import math
 from pymongo import AsyncMongoClient
@@ -30,7 +31,7 @@ request_timeout = (int(600), int(600))
 database = client.get_database(DATABASE) # Select the MongoDB database to use
 games = database.get_collection(GAMES_COLLECTION) # Select the database collection
 
-game_ids = []
+game_ids = [90101]
 
 async def get_popular_games(popularity_type):
     game_id_array = []
@@ -119,41 +120,12 @@ async def get_games_of_attribute(field, attribute_id, popularity_type):
             else:
                 print("Game did not meet genre requirement.")
 
-
-    """genre_response = post(
-        'https://api.igdb.com/v4/games',
-        timeout=request_timeout,
-        **{
-            'headers': request_headers,
-            'data':
-                'fields id;'
-                'limit 10;'
-                f'where genres=({genre_id});'
-        }
-    )"""
-
-    #print(str(genre_response.json()))
-
-    """if (len(genre_response.json()) > 0):
-        genre_data = genre_response.json()
-        print(str(genre_data))
-        for game in genre_data:
-            print(str(game))
-            game_id_array.append(game['id'])"""
-
     return game_id_array
 
 def create_header(title):
     print("\n--------------------------------")
     print(f"{title}")
     print("--------------------------------")
-
-"""async def array_data(object_data, key, endpoint, title, items, game_id):
-    create_header(title)
-    print(f"Searching IGDB API response for {items} of game with IGDB id of {game_id}...")
-    if (object_data.get(key)):
-        item_array = []
-        print(f"Started getting ")"""
 
 def add_key_basic(data_object, data_object_key, header, game_id, game_object, game_object_key):
     create_header(header)
@@ -166,6 +138,16 @@ def add_key_basic(data_object, data_object_key, header, game_id, game_object, ga
     else:
         print(f"No {lowercaseHeader} found for this game.")
 
+"""
+    Returns the response from an IGDB API query
+
+    Arguments:
+    - endpoint: The endpoint to query
+    - fields: 
+        + The fields that should be returned in the response object
+        + Specified as a comma-separated list
+    - where: The criteria to specify
+"""
 async def IGDB_query(endpoint, fields, where):
     response = post(
         f'https://api.igdb.com/v4/{endpoint}',
@@ -179,16 +161,31 @@ async def IGDB_query(endpoint, fields, where):
     )
     return response
 
+"""
+    Used to assign item properties to an object
+"""
 def assign_item_properties_to_object(object, item, properties):
     if (len(properties) > 0):
         for property in properties:
             if (item.get(property)): object[property] = item[property]
 
-async def upsert_external_games(data_object, key, display):
+"""
+    Upserts a game's child games, if any
+
+    Child games include:
+    - DLCs
+    - Expansions
+    - Standalone Expansions
+    - Expanded Games
+    - Remakes
+    - Remasters
+    - Ports
+"""
+async def upsert_external_games(data_object, key, display, skip_if_updated = True):
     if (data_object.get(key)):
         for item in data_object[key]:
             print(f"Getting data for {display} with id of {item}...")
-            await upsert_game(item)
+            await upsert_game(item, skip_if_updated)
 
 def get_IGDB_id(data_object, db_object, IGDB_game_id):
     create_header("Game ID")
@@ -248,9 +245,34 @@ async def add_game_type(data_object, game_id, db_object):
             if (game_type_data.get('type')): game_type_object['type'] = game_type_data['type']
 
             db_object['game_type'] = game_type_object
+
+            # Add the year and port if game is a port
+            """if (db_object.get('title') and data_object['game_type'] == 11):
+                release_year = date.fromtimestamp(data_object)
+                db_object['title'] = db_object['title'] + f'( Port)'"""
+
             print("Finished getting game type.")
         else:
             print("No game type found for this game.")
+
+async def add_title_suffix(IGDB_game_id, data_object, game_object):
+
+    title_suffix = " ("
+
+    if (data_object.get('first_release_date')):
+        release_date = datetime.date.fromtimestamp(data_object['first_release_date'])
+        release_year = release_date.strftime("%Y")
+        title_suffix = title_suffix + release_year + " "
+
+    parent_game_result = await games.find_one({ 'IGDB_id': IGDB_game_id })
+    
+    if (parent_game_result['title'] == game_object['title'] and game_object.get('game_type') and (game_object['game_type']['IGDB_game_type_id'] == 11 or game_object['game_type']['IGDB_game_type_id'] == 9)):
+        print("Parent game has the same title as game object")
+
+        game_object['title'] = game_object['title'] + title_suffix + game_object['game_type']['type'] + ")"
+
+        print("Game object title updated.")
+        print("Title is now " + game_object['title'])
 
 async def assign_addons(header, key, data_object, game_object):
     create_header(header)
@@ -260,7 +282,17 @@ async def assign_addons(header, key, data_object, game_object):
             addon_object = await append_add_on(addon)
             addon_array.append(addon_object)
     
+        addon_array.sort(key=lambda addon: addon['first_release_date'] if addon.get('first_release_date') else math.inf)
+
+        for addon in addon_array:
+            if (addon.get('first_release_date')):
+                addon.pop('first_release_date')
+
         game_object[key] = addon_array
+
+        print("Successfully retrieved games")
+    else:
+        print("No games found for this type")
 
 async def append_add_on(IGDB_id):
     try:
@@ -298,60 +330,80 @@ async def append_add_on(IGDB_id):
         else:
             return None
         
-        """if (IGDB_game_data.get('name')):
-            addon_object['title'] = IGDB_game_data['name']
-        else:
-            print("No title found for this game.")"""
+        # Title
         get_title(IGDB_game_data, addon_object, IGDB_game_data['id'])
 
         add_key_basic(IGDB_game_data, "first_release_date", "First Release Date", IGDB_id, addon_object, "first_release_date")
 
-        """if (IGDB_game_data.get('cover')):
-            cover_response = await IGDB_query("covers", "id, image_id, height, width, url", f"game={IGDB_id}")
-
-            if (len(cover_response.json()) > 0):
-                cover_data = cover_response.json()[0]
-                if (cover_data.get('id')):
-                    cover_object = {
-                        'IGDB_cover_id': cover_data['id']
-                    }
-
-                    assign_item_properties_to_object(cover_object, cover_data, ["image_id", "height", "width", "url"])
-
-                    addon_object['cover'] = cover_object
-        else:
-            print("No cover found for this game.")"""
+        # Cover
         await add_cover(IGDB_game_data, IGDB_id, addon_object)
         
-        """create_header("Game Type")
-        if (IGDB_game_data.get('game_type')):
-            game_type_object = {
-                'IGDB_game_type_id': IGDB_game_data['game_type']
-            }
-            game_type_response = await IGDB_query("game_types", "type", f"id={IGDB_game_data['game_type']}")
-
-            if (len(game_type_response.json()) > 0):
-                game_type_data = game_type_response.json()[0]
-
-                if (game_type_data.get('type')): game_type_object['type'] = game_type_data['type']
-
-                addon_object['game_type'] = game_type_object
-                print("Finished getting game type.")
-        else:
-            print("No game type found for this game.")"""
+        # Game Type
         await add_game_type(IGDB_game_data, IGDB_id, addon_object)
+
+        if (IGDB_game_data.get('first_release_date')):
+            addon_object['first_release_date'] = IGDB_game_data['first_release_date']
+
+        if (IGDB_game_data.get('parent_game')):
+            #await add_title_suffix(IGDB_id, IGDB_game_data, addon_object)
+            await add_title_suffix(IGDB_game_data['parent_game'], IGDB_game_data, addon_object)
+            print("Added title suffix")
         
         return addon_object
     except Exception as e:
         print(f"Error getting addon data: {e}")
         return None
 
+async def check_for_updates(IGDB_game_id):
+    print(f"Checking for updates...")
 
-async def upsert_game(IGDB_game_id):
+    # MongoDB query
+    mongodb_game = await games.find_one(
+        {
+            'IGDB_id': IGDB_game_id
+        }
+    )
+
+    if (mongodb_game == None): # If no games are found; mongodb_game value is None
+        print(f"Game with ID of {IGDB_game_id} not found in database. Checking IGDB...")
+        igdb_response = await IGDB_query('games', 'id', f'id={IGDB_game_id}')
+        time.sleep(0.251)
+        if (len(igdb_response.json()) > 0):
+            print(f"Game with ID of {IGDB_game_id} found in IGDB query.")
+            return True
+        else:
+            print(f"Game with ID of {IGDB_game_id} does not exist in IGDB.")
+
+    if (mongodb_game.get('IGDB_updated_at')):
+        print(f"Game with ID of {IGDB_game_id} found in database. Checking IGDB for updates...")
+        igdb_response = await IGDB_query('games', 'updated_at', f'id={IGDB_game_id} & updated_at > {mongodb_game['IGDB_updated_at']}')
+        time.sleep(0.251)
+        if (len(igdb_response.json()) > 0):
+            print(f"IGDB updated found for game with ID of {IGDB_game_id}")
+            return True
+        else:
+            print("No updates were found for this game.")
+        
+    #if (len(igdb_response.json()) > 0):
+     #   return True
+        
+    return False
+
+    #updated_at_response = await IGDB_query('games', 'updated_at', f'updated_at > ')
+
+async def upsert_game(IGDB_game_id, skip_if_updated = True):
     #uri = MONGODB_CONNECTION_STRING
     #client = AsyncMongoClient(uri, connectTimeoutMS=60000, tls=True)
 
     print(f"Starting upsert process for ID of {IGDB_game_id}")
+
+    # This indicates if we want to skip a game if it is update to date
+    # By default, we want to update only if necessary
+    if (skip_if_updated == True):
+        update_check = await check_for_updates(IGDB_game_id)
+        if (update_check == False):
+            print(f"This game does not need to be updated.")
+            return
 
     try:
         #database = client.get_database(DATABASE) # Select the MongoDB database to use
@@ -398,14 +450,6 @@ async def upsert_game(IGDB_game_id):
         #get_IGDB_id(IGDB_game_data, game_object, IGDB_game_id)
         
         # Title
-        """create_header("Title")
-        print(f"Searching IGDB API response for title of game with id of {IGDB_game_id}...")
-        if (IGDB_game_data.get('name')):
-            game_object['title'] = IGDB_game_data['name']
-            print("Got game title.")
-            print(f"Game selected: {game_object['title']}")
-        else:
-            print("No title found for this game.")"""
         get_title(IGDB_game_data, game_object, IGDB_game_id)
         
         # Alternative Names
@@ -442,6 +486,7 @@ async def upsert_game(IGDB_game_id):
                         alternative_names_array.append(alternative_name_object)
                         print(f"Alternative title with id of {alternative_name_data['id']} appended to array.\n")
                 
+                alternative_names_array.sort(key=lambda alternative_name: alternative_name['name'] if alternative_name.get('name') else '')
                 game_object['alternative_titles'] = alternative_names_array
                 print("Finished getting alternative titles.")
         else:
@@ -475,7 +520,10 @@ async def upsert_game(IGDB_game_id):
                             'IGDB_platform_id': platform_data['id']
                         }
 
-                        if (platform_data.get('name')): platform_object['name'] = platform_data['name']
+                        if (platform_data.get('name')):
+                            platform_object['name'] = platform_data['name']
+                            print("Platform found: " + platform_data['name'])
+
                         if (platform_data.get('slug')): platform_object['slug'] = platform_data['slug']
 
                         game_platforms.append(platform_object)
@@ -500,13 +548,22 @@ async def upsert_game(IGDB_game_id):
         
         # Release Dates
         create_header("Release Dates")
+
+        platforms_to_keep = []
+        platforms_to_remove = []
+
         print(f"Searching IGDB API response for release dates of game with IGDB id of {IGDB_game_id}...")
         if (IGDB_game_data.get('release_dates')):
             print("Started getting release dates...")
             release_date_array = []
 
             for release_date in IGDB_game_data['release_dates']:
-                release_date_response = post(
+                release_date_response = await IGDB_query(
+                    'release_dates',
+                    'id, date, platform, release_region, status',
+                    f'id={release_date} & game={IGDB_game_id}'
+                )
+                """release_date_response = post(
                     'https://api.igdb.com/v4/release_dates',
                     timeout = request_timeout,
                     **{
@@ -515,7 +572,7 @@ async def upsert_game(IGDB_game_id):
                             'fields id, date, platform, release_region, status;'
                             f'where id={release_date} & game={IGDB_game_id};'
                     }
-                )
+                )"""
                 time.sleep(0.251)
 
                 if (len(release_date_response.json()) > 0):
@@ -537,7 +594,9 @@ async def upsert_game(IGDB_game_id):
                                     release_platform_object = {
                                         'IGDB_platform_id': release_platform_data['id']
                                     }
-                                    if (release_platform_data.get('name')): release_platform_object['name'] = release_platform_data['name']
+                                    if (release_platform_data.get('name')):
+                                        release_platform_object['name'] = release_platform_data['name']
+                                        print("Release platform found: " + release_platform_data['name'])
                                     
                                     release_date_object['platform'] = release_platform_object
                             
@@ -561,6 +620,10 @@ async def upsert_game(IGDB_game_id):
 
                             if (len(release_date_status_response.json()) > 0):
                                 release_date_status_data = release_date_status_response.json()[0]
+
+                                print("Release date status data")
+                                print(str(release_date_status_data))
+
                                 if (release_date_status_data.get('id')):
                                     release_date_status_object = {
                                         'IGDB_release_date_status_id': release_date_status_data['id']
@@ -568,11 +631,30 @@ async def upsert_game(IGDB_game_id):
                                     if (release_date_status_data.get('name')): 
                                         release_date_status_object['name'] = release_date_status_data['name']
 
-                                        if (release_date_status_data['name'] == 'Cancelled' and release_date_data.get('platform')):
+                                        if (release_date_data.get('platform')):
+                                            if (release_date_status_data['name'] != 'Cancelled'):
+                                                print("Found a platform to keep")
+
+                                                if (platforms_to_keep.count(release_date_data['platform']) == 0):
+                                                    platforms_to_keep.append(release_date_data['platform'])
+
+                                                if (platforms_to_remove.count(release_date_data['platform']) > 0):
+                                                    platforms_to_remove.remove(release_date_data['platform'])
+                                            else:
+                                                if (platforms_to_keep.count(release_date_data['platform']) == 0):
+                                                    print("Found a platform to remove")
+                                                    platforms_to_remove.append(release_date_data['platform'])
+
+                                        """if (release_date_status_data['name'] == 'Cancelled' and release_date_data.get('platform')):
+                                            print("Cancelled release date found:")
                                             for platform in game_object['platforms']:
+                                                print("Platform")
+                                                print(str(platform))
+
                                                 if (platform['IGDB_platform_id'] == release_date_data['platform']):
-                                                    game_object['platforms'].remove(platform)
-                                                    print("Removed platform.")
+                                                    #game_object['platforms'].remove(platform)
+                                                    platforms_to_remove.append(platform)
+                                                    print("Removed platform.")"""
 
 
                                     release_date_object['release_date_status'] = release_date_status_object
@@ -581,6 +663,21 @@ async def upsert_game(IGDB_game_id):
                 
             release_date_array.sort(key=lambda release: release['date'] if release.get('date') else math.inf)
             game_object['release_dates'] = release_date_array
+
+            print("Platforms to keep:")
+            print(platforms_to_keep)
+            print("Platforms to remove:")
+            print(platforms_to_remove)
+
+            if (len(platforms_to_remove) > 0):
+                for platform in game_object['platforms']:
+                    if (platforms_to_remove.count(platform['IGDB_platform_id']) > 0):
+                        game_object['platforms'].remove(platform)
+
+            print("Game object platforms")
+            print(str(game_object['platforms']))
+
+            #raise SystemExit("Test")
         else:
             print("No release dates found for this game.")
             
@@ -713,6 +810,7 @@ async def upsert_game(IGDB_game_id):
                         
                         game_engines.append(game_engine_object)
 
+            game_engines.sort(key=lambda engine: engine['name'] if engine.get('name') else '')
             game_object['game_engines'] = game_engines
             print("Successfully obtained game engine data.")
         else:
@@ -845,11 +943,17 @@ async def upsert_game(IGDB_game_id):
         print(f"Searching IGDB API response for artworks related to game with IGDB id of {IGDB_game_id}...")
         if (IGDB_game_data.get('artworks')):
             print("Started getting artworks...")
+
+            # 1. Get all artworks for the specified game
             artwork_response = await IGDB_query("artworks", "id, image_id, url, width, height, artwork_type", f'game={IGDB_game_id}')
+
+            print(str(artwork_response.json()))
 
             if (len(artwork_response.json()) > 0):
                 artwork_data = artwork_response.json()
-                game_artworks = []
+                game_artworks = [] # Stores everything related to a game's artworks
+
+                game_artwork_types = [] # Stores the artwork type's id and name, as well as any artworks of that type
 
                 for artwork in artwork_data:
                     if (artwork.get('id')):
@@ -860,22 +964,86 @@ async def upsert_game(IGDB_game_id):
                         assign_item_properties_to_object(artwork_object, artwork, ["image_id", "url", "width", "height"])
 
                         if (artwork.get('artwork_type')):
-                            artwork_type_response = await IGDB_query("artwork_types", "id, name", f'where id={artwork['artwork_type']}')
+                            artwork_type_response = await IGDB_query("artwork_types", "id, name", f'id={artwork['artwork_type']}')
+
+                            print("Artwork type")
+                            print(str(artwork_type_response.json()))
 
                             if (len(artwork_type_response.json()) > 0):
                                 artwork_type_data = artwork_type_response.json()[0]
 
                                 if (artwork_type_data.get('id')):
+
                                     artwork_type_object = {
                                         'IGDB_artwork_type_id': artwork_type_data['id']
                                     }
                                     if (artwork_type_data.get('name')): artwork_type_object['name'] = artwork_type_data['name']
 
-                                    artwork_object['artwork_type'] = artwork_type_object
-                        
-                        game_artworks.append(artwork_object)
+                                    print("game_artwork_types")
+                                    print(str(game_artwork_types))
 
-            game_object['artworks'] = game_artworks
+                                    # Experimental code
+                                    artwork_check = False
+                                    artwork_index = -1
+
+                                    for index, artwork in enumerate(game_artwork_types):
+                                        if (artwork.get('IGDB_artwork_type_id')):
+                                            id = artwork['IGDB_artwork_type_id']
+                                            if (id == artwork_type_data['id']):
+                                                #artwork_index = game_artwork_types.index(artwork)
+
+                                                #artwork_index = game_artwork_types.index(index)
+
+                                                artwork_index = index
+
+                                                artwork_check = True
+                                    # End of experimental code
+
+                                    #if (game_artwork_types.count({'IGDB_artwork_type_id': artwork_type_data['id']}) > 0):
+                                    #if (game_artworks.count(artwork_type_data['id']) > 0):
+                                    if (artwork_check == True):
+                                        print("Existing artwork type")
+
+                                        #artwork_type_object['artworks'] = artwork_object
+                                        #game_artwork_types[artwork_type_data['id']].append(artwork_type_object)
+
+                                        #array_index = game_artworks.index({ 'IGDB_artwork_type_id': artwork_type_data['id'] })
+                                        
+                                        #array_index = game_artwork_types.index({ 'IGDB_artwork_type_id': artwork_type_data['id'] })
+                                        
+                                        #game_artworks[array_index]['artworks'].append(artwork_object)
+                                        #game_artwork_types[array_index]['artworks'].append(artwork_object)
+                                        game_artwork_types[artwork_index]['artworks'].append(artwork_object)
+
+                                        """artwork_type_object = {
+                                            'IGDB_artwork_type_id': artwork_type_data['id']
+                                        }
+                                        if (artwork_type_data.get('name')): artwork_type_object['name'] = artwork_type_data['name']"""
+                                    else:
+                                        print("New artwork type")
+
+                                        artwork_type_object['artworks'] = [artwork_object]
+
+                                        #game_artwork_types.append(artwork_type_object)
+
+                                        #game_artworks.append(artwork_type_object)
+                                        game_artwork_types.append(artwork_type_object)
+
+                                    """artwork_type_object = {
+                                        'IGDB_artwork_type_id': artwork_type_data['id']
+                                    }
+                                    if (artwork_type_data.get('name')): artwork_type_object['name'] = artwork_type_data['name']
+
+                                    artwork_object['artwork_type'] = artwork_type_object"""
+                        
+                        #game_artworks.append(artwork_object)
+
+            #game_object['artworks'] = game_artworks
+
+            game_artwork_types.sort(key=lambda artwork: artwork['IGDB_artwork_type_id'] if artwork.get('name') else math.inf)
+            #game_object['artworks'] = game_artwork_types
+            game_object['artwork_types'] = game_artwork_types
+
             print("Finished getting artworks.")
         else:
             print("No artworks found for this game.")
@@ -1039,6 +1207,7 @@ async def upsert_game(IGDB_game_id):
                         print(f"Got data for website of id {website['id']}.\n")
             
             if (len(game_websites) > 0):
+                game_websites.sort(key=lambda website: website['type']['IGDB_website_type_id'] if website.get('type') else '')
                 game_object['websites'] = game_websites
                 print("Finished getting websites.")
             else:
@@ -1210,6 +1379,10 @@ async def upsert_game(IGDB_game_id):
                     
 
             for language_support in IGDB_game_data['language_supports']:
+
+                print("\nLanguage support")
+                print(str(language_support))
+
                 language_support_object = {
                     'IGDB_language_support_id': language_support
                 }
@@ -1219,22 +1392,80 @@ async def upsert_game(IGDB_game_id):
                 if (len(language_support_response.json()) > 0):
                     language_support_data = language_support_response.json()[0]
 
+                    print("\nLanguage support data")
+                    print(str(language_support_data))
+
                     if (language_support_data.get('language')):
                         language_response = await IGDB_query("languages", "name, native_name", f'id={language_support_data['language']}')
                         time.sleep(0.251)
 
                         if (len(language_response.json()) > 0):
                             language_data = language_response.json()[0]
+
+                            print("\nLanguage data")
+                            print(str(language_data))
+
                             if (language_data.get('id')):
-                                language_object = {
+
+                                # Experimental code
+                                language_check = False
+                                language_index = -1
+
+                                for index, language in enumerate(language_array):
+                                    if (language.get('IGDB_language_id')):
+                                        if (language['IGDB_language_id'] == language_data['id']):
+                                            language_check = True
+                                            language_index = index
+
+                                if (language_check == True):
+                                    print("Existing language support")
+
+                                else:
+                                    print("New language support")
+
+                                    language_object = {
+                                        'IGDB_language_id': language_data['id']
+                                    }
+                                    if (language_data.get('name')): language_object['name'] = language_data['name']
+                                    if (language_data.get('native_name')): language_object['native_name'] = language_data['native_name']
+
+                                    #language_array.append(language_object)
+                                
+                                if (language_support_data.get('language_support_type')):
+                                    language_support_type_id = language_support_data['language_support_type']
+                                    print(f"Getting data for language support type of id {language_support_type_id}...")
+                                    language_support_type_response = await IGDB_query("language_support_types", "name", f'id={language_support_type_id}')
+                                    time.sleep(0.251)
+
+                                    if (len(language_support_type_response.json()) > 0):
+                                        language_support_type_data = language_support_type_response.json()[0]
+
+                                        language_type = ""
+
+                                        if (language_support_type_data.get('id')):
+                                            if (language_support_type_id == 1):
+                                                language_type = "audio"
+                                            elif (language_support_type_id == 2):
+                                                language_type = "subtitles"
+                                            elif (language_support_type_id == 3):
+                                                language_type = "interface"
+                                            
+                                            if (language_check == True): # Language exists in array
+                                                language_array[language_index][language_type] = True
+                                            else: # Language does not exist in array
+                                                language_object[language_type] = True
+                                                language_array.append(language_object)
+                                # End of experimental code
+
+                                """language_object = {
                                     'IGDB_language_id': language_data['id']
                                 }
                                 if (language_data.get('name')): language_object['name'] = language_data['name']
                                 if (language_data.get('native_name')): language_object['native_name'] = language_data['native_name']
 
-                                language_support_object['language'] = language_object
+                                language_support_object['language'] = language_object"""
 
-                    if (language_support_data.get('language_support_type')):
+                    """if (language_support_data.get('language_support_type')):
                         language_support_type_id = language_support_data['language_support_type']
                         print(f"Getting data for language support type of id {language_support_type_id}...")
                         language_support_type_response = await IGDB_query("language_support_types", "name", f'id={language_support_type_id}')
@@ -1242,11 +1473,17 @@ async def upsert_game(IGDB_game_id):
 
                         if (len(language_support_type_response.json()) > 0):
                             language_support_type_data = language_support_type_response.json()[0]
+
+                            print("\nLanguage support type data")
+                            print(str(language_support_type_data))
+
                             if (language_support_type_data.get('id')):
                                 language_support_type_object = {
                                     'IGDB_language_support_type_id': language_support_type_data['id']
                                 }
                                 if (language_support_type_data.get('name')): language_support_type_object['name'] = language_support_type_data['name']
+
+                                # Experimental code
 
                                 if (language_support_type_id == 1):
                                     audio_supports.append(language_data)
@@ -1261,16 +1498,22 @@ async def upsert_game(IGDB_game_id):
                                     #language_data['interface'] = True
                                     #language_support_array.append(language_data)
                                 
-                                print(f"Got data for language support type of id {language_support_type_data['id']}.\n")
+                                print(f"Got data for language support type of id {language_support_type_data['id']}.\n")"""
                 
-                language_support_array.append(language_support_object)
-                print(f"Got data for language support of id {language_support}.")
+                #print("\nLanguage support object")
+                #print(str(language_support_object))
 
-            support_object['audio_supports'] = audio_supports
-            support_object['subtitle_supports'] = subtitle_supports
-            support_object['interface_supports'] = interface_supports
+                #language_support_array.append(language_support_object)
+                #print(f"Got data for language support of id {language_support}.")
 
-            game_object['language_supports'] = support_object
+            #support_object['audio_supports'] = audio_supports
+            #support_object['subtitle_supports'] = subtitle_supports
+            #support_object['interface_supports'] = interface_supports
+
+            #game_object['language_supports'] = support_object
+
+            language_array.sort(key=lambda language: language['native_name'] if language.get('native_name') else "")
+            game_object['language_supports'] = language_array
             print("Finished getting language support data.")
         else:
             print("No language supports found for this game.")
@@ -1307,6 +1550,7 @@ async def upsert_game(IGDB_game_id):
 
                         game_localization_array.append(game_localization_object)
             
+            game_localization_array.sort(key=lambda localization: localization['name'] if localization.get('name') else '')
             game_object['game_localizations'] = game_localization_array
             print("Finished getting game localizations.")
         else:
@@ -1380,6 +1624,30 @@ async def upsert_game(IGDB_game_id):
             if (parent_count > 0):
                 #game_object['parent_game'] = IGDB_game_data['parent_game']
                 game_object['parent_game'] = await append_add_on(IGDB_game_data['parent_game'])
+
+                #await add_title_suffix(IGDB_game_id, IGDB_game_data, game_object)
+                await add_title_suffix(IGDB_game_data['parent_game'], IGDB_game_data, game_object)
+                print("Added title suffix")
+
+                """parent_game_result = await games.find_one({'IGDB_id': IGDB_game_data['parent_game']})
+                if (parent_game_result['title'] == game_object['title'] and game_object.get('game_type') and (game_object['game_type']['IGDB_game_type_id'] == 11 or game_object['game_type']['IGDB_game_type_id'] == 9)):
+                    print("Parent game has the same title as game object")
+
+                    title_suffix = " ("
+
+                    if (game_object.get('first_release_date')):
+                        release_date = datetime.datefromtimestamp(game_object['first_release_date'])
+                        release_year = release_date.strftime("%Y")
+                        title_suffix = title_suffix + release_year + " "
+
+                    #title_suffix = title_suffix + game_object['game_type']['type'] + ")"
+
+                    #game_object['title'] = game_object['title'] + " (" + game_object['game_type']['IGDB_game_type_id'] + ")"
+                    game_object['title'] = game_object['title'] + title_suffix
+
+                    print("Game object title updated.")
+                    print("Title is now " + game_object['title'])"""
+
                 print("Parent game found for this game.")
             else:
                 print("No parent game found for this game.")
@@ -1423,6 +1691,9 @@ async def upsert_game(IGDB_game_id):
         # Remakes
         await assign_addons("Remakes", "remakes", IGDB_game_data, game_object)
 
+        # Ports
+        await assign_addons("Ports", "ports", IGDB_game_data, game_object)
+
         # MongoDB Operation
         create_header("MongoDB Operation")
 
@@ -1437,14 +1708,39 @@ async def upsert_game(IGDB_game_id):
 
             query_filter = { 'IGDB_id': IGDB_game_data['id'] }
 
+            findResult = await games.find_one(query_filter)
+
+            unset_array = []
+            game_object_keys = game_object.keys() # Gets all fields of game_object
+
+            for key in findResult.keys():
+                # game_object isn't assigned the _id or created_at fields, so we disregard those fields
+                if (key not in game_object_keys) and (key != "_id") and (key != "created_at"):
+                    unset_array.append(key)
+                    print(key)
+
             update_operation = {
                 '$set': game_object
             }
 
+            unset_object = {}
+
             if (game_object.get('title')):
                 print(f"Preparing to update information for {game_object['title']}...")
             
-            result = await games.update_one(query_filter, update_operation)
+            if (len(unset_array) > 0):
+                print("unset")
+
+                for field in unset_array:
+                    unset_object[field] = ''
+
+                update_operation['$unset'] = unset_object
+
+                result = await games.update_one(query_filter, update_operation)
+            else:
+                print("do not unset")
+
+                result = await games.update_one(query_filter, update_operation)
             
             if (game_object.get('title')):
                 print(f"{game_object['title']} updated successfully!")
@@ -1463,27 +1759,28 @@ async def upsert_game(IGDB_game_id):
             if (game_object.get('title')):
                 print(f"{game_object['title']} added successfully!")
         
-        await upsert_external_games(IGDB_game_data, 'dlcs', "DLC")
-        await upsert_external_games(IGDB_game_data, 'expansions', "expansion")
-        await upsert_external_games(IGDB_game_data, 'standalone_expansions', 'standalone expansion')
-        await upsert_external_games(IGDB_game_data, 'expanded_games', "expanded game")
-        await upsert_external_games(IGDB_game_data, 'remakes', "remake")
-        await upsert_external_games(IGDB_game_data, 'remasters', "remaster")
-        await upsert_external_games(IGDB_game_data, 'ports', "port")
+        # Upserting child games (if any)
+        await upsert_external_games(IGDB_game_data, 'dlcs', "DLC", skip_if_updated)
+        await upsert_external_games(IGDB_game_data, 'expansions', "expansion", skip_if_updated)
+        await upsert_external_games(IGDB_game_data, 'standalone_expansions', 'standalone expansion', skip_if_updated)
+        await upsert_external_games(IGDB_game_data, 'expanded_games', "expanded game", skip_if_updated)
+        await upsert_external_games(IGDB_game_data, 'remakes', "remake", skip_if_updated)
+        await upsert_external_games(IGDB_game_data, 'remasters', "remaster", skip_if_updated)
+        await upsert_external_games(IGDB_game_data, 'ports', "port", skip_if_updated)
 
     except Exception as e:
         raise Exception(f"Couldn't upsert game with id of {IGDB_game_id} to database: {e}")
 
-# We use a loop to iterate through the game id array
-#for id in game_ids:
-    #asyncio.run(upsert_game(id))#
-
+"""
+    Allows a user to select a popularity primitive to filter by
+"""
 def select_popularity_primitive():
-    popularity_type_int = -1
+    popularity_type_int = -1 # Initialize an integer version of the user's selection as -1
 
     while (popularity_type_int < 0 or popularity_type_int > 8):
 
-        print("Please input which popularity type you would like to filter by.")
+        # Present the menu of options
+        print("Please input which popularity type you would like to filter by.\n")
         print("1: IGDB Visits")
         print("2: IGDB want to play")
         print("3: IGDB playing")
@@ -1491,7 +1788,7 @@ def select_popularity_primitive():
         print("5: Steam 24hr peak players")
         print("6: Steam positive reviews")
         print("7: Steam Negative Reviews")
-        print("8: Steam Total Reviews")
+        print("8: Steam Total Reviews\n")
 
         popularity_type = input('--> ')
 
@@ -1507,13 +1804,13 @@ def select_popularity_primitive():
 async def upsert_game_ids(game_ids):
     game_id_array = []
 
-    print("Please select an option to continue.")
+    print("Please select an option to continue.\n")
     print("1) Popularity API query")
     print("2) Default game ID array")
     print("3) Update all existing games")
     print("4) Similar games for each ID in the default game ID array")
     print("5) Add games of a given genre")
-    print("6) Add games of a given game mode")
+    print("6) Add games of a given game mode\n")
     upsert_type = input('--> ')
 
     if (int(upsert_type) < 1 or int(upsert_type) > 6):
@@ -1552,13 +1849,43 @@ async def upsert_game_ids(game_ids):
         print("You have selected to use the default game ID array.")
         game_id_array = game_ids
     elif (upsert_type == "3"):
+        #update_choice = 0
+
         print("You have selected to update all existing games.")
 
+        """while (update_choice < 1 or update_choice > 2):
+            print("\nWould you like to update all games or only ones that need updates?")
+
+            print("1) All games")
+            print("2) Only games that need updates")
+
+            update_choice_input = input('--> ')
+            update_choice = int(update_choice_input)
+
+        if (update_choice == 2):
+            update_option = True
+        else:
+            update_option = False"""
+
         # Because of how the upsert_game function behaves, child games of an existing game will be updated accordingly
-        async for game in games.find({ 'parent_game': { '$exists': False }}):
-            if (not game.get('parent_game')):
+        #async for game in games.find({ 'parent_game': { '$exists': False }}):
+        #async for game in games.find({}):
+         #   await upsert_game(game['IGDB_id'], update_option)
+            #if (not game.get('parent_game')):
                 #game_id_array.append(game['IGDB_id'])
-                await upsert_game(game['IGDB_id'])
+
+                #await upsert_game(game['IGDB_id'], update_option)
+                
+        """if (update_choice == 2):
+                    update_check = await check_for_updates(game['IGDB_id'])
+                    time.sleep(0.251)
+                    if (update_check == True):
+                        print("Updates found for this game.")
+                        await upsert_game(game['IGDB_id'])
+                    else:
+                        print("No updates found for this game.")
+                else:
+                    await upsert_game(game['IGDB_id'])"""
                 
             #game_id_array.append(game['IGDB_id'])
 
@@ -1604,53 +1931,33 @@ async def upsert_game_ids(game_ids):
 
         print(f"Genre choice: {genre_choice}")
 
-        match int(genre_choice):
-            case 1:
-                genre_parameter = 31
-            case 2:
-                genre_parameter = 33
-            case 3:
-                genre_parameter = 35
-            case 4:
-                genre_parameter = 4
-            case 5:
-                genre_parameter = 25
-            case 6:
-                genre_parameter = 32
-            case 7:
-                genre_parameter = 36
-            case 8:
-                genre_parameter = 7
-            case 9:
-                genre_parameter = 8
-            case 10:
-                genre_parameter = 2
-            case 11:
-                genre_parameter = 9
-            case 12:
-                genre_parameter = 26
-            case 13:
-                genre_parameter = 10
-            case 14:
-                genre_parameter = 11
-            case 15:
-                genre_parameter = 12
-            case 16:
-                genre_parameter = 5
-            case 17:
-                genre_parameter = 13
-            case 18:
-                genre_parameter = 14
-            case 19:
-                genre_parameter = 15
-            case 20:
-                genre_parameter = 24
-            case 21:
-                genre_parameter = 16
-            case 22:
-                genre_parameter = 34
-            case _:
-                genre_parameter = 2
+        # Quick lookup object that functions as an alternative to a match statement
+        genre_index = {
+            1: 31, # Adventure
+            2: 33, # Arcade
+            3: 35, # Card/Board
+            4: 4, # Fighting
+            5: 25, # Hack-and-Slash/Beat-em-up
+            6: 32, # Indie
+            7: 36, # MOBA
+            8: 7, # Music
+            9: 8, # Platform
+            10: 2, # Point-and-Click
+            11: 9, # Puzzle
+            12: 26, # Quiz/Trivia
+            13: 10, # Racing
+            14: 11, # Real-Time Strategy (RTS)
+            15: 12, # Role-Playing (RPG)
+            16: 5, # Shooter
+            17: 13, # Simulator
+            18: 14, # Sports
+            19: 15, # Strategy
+            20: 24, # Tactical
+            21: 16, # Turn-Based Strategy (TBS)
+            22: 34 # Visual Novel
+        }
+
+        genre_parameter = genre_index[int(genre_choice)]
 
         print(f"Genre parameter: {genre_parameter}")
 
@@ -1663,14 +1970,14 @@ async def upsert_game_ids(game_ids):
         print("You have selected to upsert games of a given game mode.")
 
         while (mode_choice < 1 or mode_choice > 6):
-            print("\nPlease select a game mode:")
+            print("\nPlease select a game mode:\n")
 
             print("1) Single Player")
             print("2) Multiplayer")
             print("3) Co-Op")
             print("4) Split-Screen")
             print("5) MMO")
-            print("6) Battle Royale")
+            print("6) Battle Royale\n")
 
             mode_choice_input = input('--> ')
             mode_choice = int(mode_choice_input)
@@ -1679,13 +1986,30 @@ async def upsert_game_ids(game_ids):
 
         game_id_array = await get_games_of_attribute("game_modes", mode_choice, popularity_type_int)
 
-    #for id in game_ids:
+    update_choice = 0
+
+    while (update_choice < 1 or update_choice > 2):
+        print("\nWould you like to update games regardless of whether they need updates, or only games that need updates?")
+
+        print("1) All games")
+        print("2) Only games that need updates")
+
+        update_choice_input = input('--> ')
+        update_choice = int(update_choice_input)
+
+    if (update_choice == 2):
+        update_option = True
+    else:
+        update_option = False
+
     if (upsert_type == "1" or upsert_type == "2" or upsert_type == "4" or upsert_type == "5" or upsert_type == "6"):
+       
+       # We use a loop to iterate through the game id array
        for id in game_id_array:
-          await upsert_game(id)
-    
-    #for id in game_id_array:
-     #  await upsert_game(id)
+          await upsert_game(id, update_option)
+    elif (upsert_type == "3"):
+        async for game in games.find({ 'parent_game': { '$exists': False }}): # Find object formerly {}
+            await upsert_game(game['IGDB_id'], update_option)
 
 asyncio.run(upsert_game_ids(game_ids))
 

@@ -1,4 +1,5 @@
 import './_styles/tabContent.css';
+import type GameLocalization from '@/app/lib/types/gameLocalization';
 import type GameMode from '@/app/lib/types/gameMode';
 import type MultiplayerMode from '@/app/lib/types/multiplayerMode';
 import type PlayerPerspective from '@/app/lib/types/playerPerspective';
@@ -7,6 +8,7 @@ import type GameEngine from '@/app/lib/types/gameEngine';
 import type ReleaseDate from '@/app/lib/types/_release_dates/releaseDate';
 
 import formatUnixTimestamp from '@/app/lib/utility_functions/formatUnixTimestamp';
+import SectionHeader from '../_general/SectionHeader';
 
 interface AdditionalInformationTabProps {
     game_modes?: GameMode[]
@@ -15,6 +17,7 @@ interface AdditionalInformationTabProps {
     alternative_names?: AlternativeTitle[]
     game_engines?: GameEngine[]
     release_dates?: ReleaseDate[]
+    game_localizations?: GameLocalization[]
 
     hypes?: number
     created_at?: number
@@ -28,21 +31,24 @@ export default function AdditionalInformationTab(props: AdditionalInformationTab
     const alternativeNames = props.alternative_names;
     const gameEngines = props.game_engines;
     const releaseDates = props.release_dates;
+    const gameLocalizations = props.game_localizations;
 
     const hypes = props.hypes;
     const createdAt = props.created_at;
     const updatedAt = props.updated_at;
     
-    const h1 = "text-white";
-    const h2 = "text-white";
-    const h3 = "text-white";
-    const container = "mt-4 p-4 m-4 bg-violet-700 rounded-sm";
+    //const container = "mt-4 p-4 m-4 bg-secondaryBg text-secondaryText rounded-sm"; /* Formerly bg-violet-700 */
+    const container = "rounded-sm shadow-sm p-4 bg-secondaryBg text-secondaryText mb-4"
 
     return (
-        <div>
-            <h1 className="h1">Additional Information</h1>
+        <div className="w-full max-h-[80vh]">
+            {/*<h1 className="h1 mb-4">Additional Information</h1>
+            <hr className="mb-4" />*/}
+            <SectionHeader
+                title="Additional Information"
+            />
 
-            <div className="flex flex-col lg:flex-row justify-around flex-wrap mx-auto lg:p-4">
+            <div className="flex flex-col justify-around flex-wrap mx-auto">
 
                 {
                     releaseDates &&
@@ -72,8 +78,10 @@ export default function AdditionalInformationTab(props: AdditionalInformationTab
                                         const regionString = regionArray.join(" ");
                                         parentheses.push(regionString);
                                     }
+                                    
+                                    const isCancelled = releaseDate?.release_date_status?.name == "Cancelled"
 
-                                    const parenthesesString = releaseDate.date ? ` (${parentheses.join(", ")})` : parentheses.join(", ");
+                                    const parenthesesString = releaseDate.date ? ` (${parentheses.join(", ")})` : (isCancelled ? "" : "TBA (") + parentheses.join(", ") + (isCancelled ? "" : ")");
 
                                     return (
                                         <li key={`RD${releaseDate.IGDB_release_date_id}`}>
@@ -119,7 +127,7 @@ export default function AdditionalInformationTab(props: AdditionalInformationTab
                             multiplayerModes.map((multiplayerMode) => {
                                 return (
                                 <div key={`MM${multiplayerMode.IGDB_multiplayer_mode_id}`}>
-                                    <h3 className={h3}>{multiplayerMode.platform ? multiplayerMode.platform.name : "No Platform Specified"}</h3>
+                                    <h3 className="text-secondaryText">{multiplayerMode.platform ? multiplayerMode.platform.name : "No Platform Specified"}</h3>
 
                                     <ul className="list-disc list-inside">
 
@@ -197,6 +205,24 @@ export default function AdditionalInformationTab(props: AdditionalInformationTab
                                     return (
                                         <li key={`AN${alternativeName.IGDB_alternative_name_id}`}>
                                             {alternativeName.title} ({alternativeName.comment})
+                                        </li>
+                                    )
+                                })
+                            }
+                        </ul>
+                    </div>
+                }
+
+                {
+                    gameLocalizations &&
+                    <div className={`${container}`}>
+                        <h2 className="h2">Game Localizations</h2>
+                        <ul className="list-disc list-inside">
+                            {
+                                gameLocalizations.map((gameLocalization) => {
+                                    return (
+                                        <li key={`GL${gameLocalization.IGDB_game_localization_id}`}>
+                                            {gameLocalization.name} ({gameLocalization.region.name}/{gameLocalization.region.identifier}, {gameLocalization.region.category})
                                         </li>
                                     )
                                 })

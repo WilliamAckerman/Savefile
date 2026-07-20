@@ -15,11 +15,12 @@ export default function GeneralInformationTab(props: GeneralInformationTabProps)
     const storyline: string = props.storyline;
     const gameTimeToBeat = props.game_time_to_beat;
 
-    const h2 = "text-white mb-2";
+    const h2 = "mb-2";
 
     return (
-        <div>
+        <div className="w-full max-h-[80vh]">
             <h1 className="h1 mb-4">General Information</h1>
+            <hr className="mb-4" />
             
             {
                 summary != "" &&
@@ -48,7 +49,7 @@ export default function GeneralInformationTab(props: GeneralInformationTabProps)
                         Time to Beat
                     </h2>
 
-                    <div className="flex flex-col md:flex-row items-center justify-evenly">
+                    {/*<div className="flex flex-col md:flex-row items-center justify-evenly">*/}
                         {
                             gameTimeToBeat.normally &&
                             <TimeToBeatSection
@@ -72,12 +73,15 @@ export default function GeneralInformationTab(props: GeneralInformationTabProps)
                                 timeToBeat={gameTimeToBeat.hastily}
                             />
                         }
-                    </div>
+                    {/*</div>*/}
 
                     {
                         gameTimeToBeat.count &&
                         <div className="mt-2">
-                            <p className="text-white text-center text-lg lg:text-xl mb-2">Based on {gameTimeToBeat.count} submission{gameTimeToBeat.count == 1 ? "" : "s"}.</p>
+                            <p 
+                                //className="text-center text-lg lg:text-xl mb-2"
+                                className="mb-2"
+                            >Based on {gameTimeToBeat.count} submission{gameTimeToBeat.count == 1 ? "" : "s"}.</p>
                         </div>
                     }
                 </div>

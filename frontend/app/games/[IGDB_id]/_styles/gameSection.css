@@ -13,7 +13,7 @@
     }
 
     .gameSectionBox {
-        @apply bg-slate-900 flex justify-evenly mx-auto mt-4 mb-4 lg:mt-0 lg:mb-0 p-4 rounded-sm shadow-sm max-w-[90%] min-w-[90%] text-neutral-50 h-auto sm:max-h-[75%] sm:min-h-[75%] lg:max-h-[90%] lg:min-h-[90%] overflow-y-auto;
+        @apply /*bg-slate-900*/ flex justify-evenly mx-auto mt-4 mb-4 lg:mt-0 lg:mb-0 p-4 rounded-sm shadow-sm max-w-[90%] min-w-[90%] text-neutral-50 h-auto sm:max-h-[75%] sm:min-h-[75%] lg:max-h-[90%] lg:min-h-[90%] overflow-y-auto;
     }
 
     .shadCdnTabList {
@@ -21,7 +21,7 @@
     }
 
     .shadCdnTab {
-        @apply block text-neutral-50 hover:bg-violet-600 cursor-pointer w-full border-solid border-white border p-1;
+        @apply block /*text-neutral-50 hover:bg-violet-600*/ cursor-pointer w-full border-solid /*border-white*/ border p-1;
     }
 
     @media (width < 768px) {

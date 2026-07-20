@@ -4,6 +4,8 @@ import { Suspense } from 'react'
 
 import getSimilarGames from './_components/tab_panels/_api/getSimilarGames';
 
+import GameInfoLoadingSkeleton from './_components/_general/GameInfoLoadingSkeleton';
+
 export default async function Page(
     { params }: { params: Promise<{ IGDB_id: string }> }
 ) {
@@ -17,8 +19,8 @@ export default async function Page(
     //console.log(similarGameData);
 
     return (
-        <div>
-            <Suspense fallback={<p>Loading game data...</p>}>
+        <main> {/* Formerly a <div> element */}
+            <Suspense fallback={<GameInfoLoadingSkeleton />}>
             {
                 data?.success === true ?
                 <GameInformation
@@ -29,6 +31,7 @@ export default async function Page(
                 <p>Failed to get game data.</p>
             }
             </Suspense>
-        </div>
+            {/*<GameInfoLoadingSkeleton />*/}
+        </main>
     )
 }

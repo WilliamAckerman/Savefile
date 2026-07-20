@@ -8,7 +8,18 @@ import getSearchResults from '../_lib/getSearchResults';
 
 import SearchCheckbox from './SearchCheckbox';
 
+import { Search } from 'lucide-react';
+
 import '@/app/styles/Form.css';
+
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger
+} from '@/app/components/Accordion';
+
+import CheckboxButton from './CheckboxButton';
 
 export default function SearchForm() {
     const searchParams = useSearchParams();
@@ -17,6 +28,21 @@ export default function SearchForm() {
     const [limit, setLimit] = useState(Number(searchParams.get('limit') || 12));
     const [currentPage, setCurrentPage] = useState(Number(searchParams.get('page') || 1));
     const [pageCount, setPageCount] = useState(2);
+
+    function handleCheckboxes(check: boolean = false, setters: React.Dispatch<React.SetStateAction<boolean>>[]) {
+        /*setXbsx(check)
+        setXbo(check)
+        setPs5(check)
+        setPs4(check)
+        setNs2(check)
+        setNs(check)
+        setWindows(check)
+        setMac(check)
+        setLinux(check)*/
+        setters.forEach((setter) => {
+            setter(check)
+        })
+    }
 
     function resetForm() {
         setStandard(false)
@@ -137,10 +163,15 @@ export default function SearchForm() {
 
     const router = useRouter(); // Extracts the replace method from useRouter
 
+    const checkboxBtn = "bg-gray-500 text-white p-1 rounded-sm cursor-pointer hover:bg-gray-600 mb-1";
+
     return (
-        <div className="flex flex-col lg:flex-row items-center justify-evenly mx-auto">
+        <div 
+            /*className="flex flex-col lg:flex-row items-center justify-evenly mx-auto"*/
+            className="w-full mx-auto"
+        >
             {/* Search Form */}
-            <div className="bg-neutral-50 rounded-sm shadow-sm p-4 m-4 h-[45vh] lg:h-[90vh] overflow-y-auto">
+            <div className="bg-secondaryBg text-secondaryText rounded-sm shadow-sm p-4 m-4 h-[45vh] lg:h-[90vh] overflow-y-auto"> {/* Formerly had bg-neutral-50 class */}
                 <h2 className="form-header">
                     Search for Games
                 </h2>
@@ -148,489 +179,535 @@ export default function SearchForm() {
                     //action={getSearchResults}
                     action="/search"
                 >
-                    <label htmlFor="search" className="text-black">Search</label>
+                    <label htmlFor="search" className="block mb-1">Search</label>
                     <input 
                         name="search" 
                         id="search"
                         type="text" 
                         //defaultValue={searchParams.get('search') ? searchParams.get('search')?.toString() : ""}
                         defaultValue={searchText}
-                        className="form-field"
+                        className="form-field bg-formFieldBg text-formFieldText"
                         placeholder="Search by title..."
                     />
 
                     <div className="mt-4 mb-4 flex flex-col md:flex-row justify-evenly">
-                        <div className="md:mr-4">
-                            <h3 className="text-black form-sub-header">
-                                Filter by Platform
-                            </h3>
+                        <Accordion type="multiple">
+                            <AccordionItem value="item-1">
+                                <AccordionTrigger>
+                                    Filter by Platform
+                                </AccordionTrigger>
+                                <AccordionContent>
+                                    {/*<h3 className="text-black form-sub-header">
+                                        Filter by Platform
+                                    </h3>*/}
+                                    {/*<div>
+                                        <button 
+                                            type="button"
+                                            className={`${checkboxBtn}`}
+                                            onClick={() => {
+                                                handleCheckboxes(true, [setXbsx, setXbo, setPs5, setPs4, setNs2, setNs, setWindows, setMac, setLinux])
+                                            }}
+                                        >
+                                            Select All
+                                        </button>
+                                    </div>*/}
+                                    <CheckboxButton
+                                        setter={handleCheckboxes}
+                                        text="Select All"
+                                        check={true}
+                                        setters={[setXbsx, setXbo, setPs5, setPs4, setNs2, setNs, setWindows, setMac, setLinux]}
+                                    />
 
-                            <div>
-                                <input 
-                                    name="xbsx" 
-                                    id="xbsx"
-                                    type="checkbox" 
-                                    value="true" 
-                                    checked={xbsx}
-                                    onChange={() => setXbsx(!xbsx)}
-                                /> <label htmlFor="xbsx">Xbox Series X|S</label>
-                            </div>
+                                    {/*<div>
+                                        <button 
+                                            type="button"
+                                            className={`${checkboxBtn}`}
+                                            *//*onClick={() => {
+                                                handlePlatformCheckboxes(false)
+                                            }}*//*
+                                            onClick={() => {
+                                                handleCheckboxes(false, [setXbsx, setXbo, setPs5, setPs4, setNs2, setNs, setWindows, setMac, setLinux])
+                                            }}
+                                        >
+                                            De-Select All
+                                        </button>
+                                    </div>*/}
+                                    {/*<CheckboxButton
+                                        setter={handleCheckboxes}
+                                        text="De-Select All"
+                                        check={false}
+                                        setters={[setXbsx, setXbo, setPs5, setPs4, setNs2, setNs, setWindows, setMac, setLinux]}
+                                    />*/}
 
-                            <div>
-                                <input
-                                    name="xbo"
-                                    id="xbo"
-                                    type="checkbox"
-                                    value="true"
-                                    checked={xbo}
-                                    onChange={() => setXbo(!xbo)}
-                                /> <label htmlFor="xbo">Xbox One</label>
-                            </div>
+                                    <hr className="mt-1 mb-1" />
 
-                            <div>
-                                <input
-                                    name="ps5"
-                                    id="ps5"
-                                    type="checkbox"
-                                    value="true"
-                                    checked={ps5}
-                                    onChange={() => setPs5(!ps5)}
-                                /> <label htmlFor="ps5">Playstation 5</label>
-                            </div>
+                                    {/* Xbox Series X|S */}
+                                    <SearchCheckbox
+                                        checkbox={xbsx}
+                                        setter={() => setXbsx(!xbsx)}
+                                        checkboxName="xbsx"
+                                        displayName="Xbox Series X|S"
+                                    />
 
-                            <div>
-                                <input
-                                    name="ps4"
-                                    id="ps4"
-                                    type="checkbox"
-                                    value="true"
-                                    checked={ps4}
-                                    onChange={() => setPs4(!ps4)}
-                                /> <label htmlFor="ps4">Playstation 4</label>
-                            </div>
+                                    {/* Xbox One */}
+                                    <SearchCheckbox
+                                        checkbox={xbo}
+                                        setter={() => setXbo(!xbo)}
+                                        checkboxName="xbo"
+                                        displayName="Xbox One"
+                                    />
 
-                            <div>
-                                <input
-                                    name="ns2"
-                                    id="ns2"
-                                    type="checkbox"
-                                    value="true"
-                                    checked={ns2}
-                                    onChange={() => setNs2(!ns2)}
-                                /> <label htmlFor="ns2">Nintendo Switch 2</label>
-                            </div>
+                                    {/* Playstation 5 */}
+                                    <SearchCheckbox
+                                        checkbox={ps5}
+                                        setter={() => setPs5(!ps5)}
+                                        checkboxName="ps5"
+                                        displayName="Playstation 5"
+                                    />
 
-                            <div>
-                                <input
-                                    name="ns"
-                                    id="ns"
-                                    type="checkbox"
-                                    value="true"
-                                    checked={ns}
-                                    onChange={() => setNs(!ns)}
-                                /> <label htmlFor="ns">Nintendo Switch</label>
-                            </div>
+                                    {/* Playstation 4 */}
+                                    <SearchCheckbox
+                                        checkbox={ps4}
+                                        setter={() => setPs4(!ps4)}
+                                        checkboxName="ps4"
+                                        displayName="Playstation 4"
+                                    />
 
-                            <div>
-                                <input
-                                    name="windows"
-                                    id="windows"
-                                    type="checkbox"
-                                    value="true"
-                                    checked={windows}
-                                    onChange={() => setWindows(!windows)}
-                                /> <label htmlFor="windows">Windows</label>
-                            </div>
+                                    {/* Nintendo Switch 2 */}
+                                    <SearchCheckbox
+                                        checkbox={ns2}
+                                        setter={() => setNs2(!ns2)}
+                                        checkboxName="ns2"
+                                        displayName="Nintendo Switch 2"
+                                    />
 
-                            <div>
-                                <input
-                                    name="mac"
-                                    id="mac"
-                                    type="checkbox"
-                                    value="true"
-                                    checked={mac}
-                                    onChange={() => setMac(!mac)}
-                                /> <label htmlFor="mac">MacOS</label>
-                            </div>
+                                    {/* Nintendo Switch */}
+                                    <SearchCheckbox
+                                        checkbox={ns}
+                                        setter={() => setNs(!ns)}
+                                        checkboxName="ns"
+                                        displayName="Nintendo Switch"
+                                    />
 
-                            <div>
-                                <input
-                                    name="linux"
-                                    id="linux"
-                                    type="checkbox"
-                                    value="true"
-                                    checked={linux}
-                                    onChange={() => setLinux(!linux)}
-                                /> <label htmlFor="linux">Linux</label>
-                            </div>
-                        </div>
+                                    {/* Windows */}
+                                    <SearchCheckbox
+                                        checkbox={windows}
+                                        setter={() => setWindows(!windows)}
+                                        checkboxName="windows"
+                                        displayName="Windows"
+                                    />
 
-                        <div className="md:ml-4">
-                            <h3 className="text-black form-sub-header">
-                                Filter by Type
-                            </h3>
+                                    {/* MacOS */}
+                                    <SearchCheckbox
+                                        checkbox={mac}
+                                        setter={() => setMac(!mac)}
+                                        checkboxName="mac"
+                                        displayName="MacOS"
+                                    />
 
-                            <div>
-                                <input
-                                    name="standard"
-                                    id="standard"
-                                    type="checkbox"
-                                    value="true"
-                                    checked={standard}
-                                    onChange={() => setStandard(!standard)}
-                                /> <label htmlFor="standard">Standard</label>
-                            </div>
+                                    {/* Linux */}
+                                    <SearchCheckbox
+                                        checkbox={linux}
+                                        setter={() => setLinux(!linux)}
+                                        checkboxName="linux"
+                                        displayName="Linux"
+                                    />
+                                </AccordionContent>
+                            </AccordionItem>
 
-                            <div>
-                                <input
-                                    name="remake"
-                                    id="remake"
-                                    type="checkbox"
-                                    value="true"
-                                    checked={remake}
-                                    onChange={() => setRemake(!remake)}
-                                /> <label htmlFor="remake">Remake</label>
-                            </div>
+                            <AccordionItem value="item-2">
+                                <AccordionTrigger>
+                                    Filter by Type
+                                </AccordionTrigger>
+                                <AccordionContent>
+                                    {/*<h3 className="text-black form-sub-header">
+                                        Filter by Type
+                                    </h3>*/}
 
-                            <div>
-                                <input
-                                    name="remaster"
-                                    id="remaster"
-                                    type="checkbox"
-                                    value="true"
-                                    checked={remaster}
-                                    onChange={() => setRemaster(!remaster)}
-                                /> <label htmlFor="remaster">Remaster</label>
-                            </div>
+                                    <CheckboxButton
+                                        setter={handleCheckboxes}
+                                        setters={[
+                                            setStandard,
+                                            setRemake,
+                                            setRemaster,
+                                            setExpanded,
+                                            setPort,
+                                            setExpansion,
+                                            setStandaloneExpansion,
+                                            setDlc
+                                        ]}
+                                    />
 
-                            <div>
-                                <input
-                                    name="expanded_game"
-                                    id="expanded_game"
-                                    type="checkbox"
-                                    value="true"
-                                    checked={expanded}
-                                    onChange={() => setExpanded(!expanded)}
-                                /> <label htmlFor="expanded_game">Expanded Game</label>
-                            </div>
+                                    {/* Standard */}
+                                    <SearchCheckbox
+                                        checkbox={standard}
+                                        setter={() => setStandard(!standard)}
+                                        checkboxName="standard"
+                                        displayName="Standard"
+                                    />
 
-                            <div>
-                                <input
-                                    name="port"
-                                    id="port"
-                                    type="checkbox"
-                                    value="true"
-                                    checked={port}
-                                    onChange={() => setPort(!port)}
-                                /> <label htmlFor="port">Port</label>
-                            </div>
+                                    {/* Remake */}
+                                    <SearchCheckbox
+                                        checkbox={remake}
+                                        setter={() => setRemake(!remake)}
+                                        checkboxName="remake"
+                                        displayName="Remake"
+                                    />
 
-                            <div>
-                                <input
-                                    name="expansion"
-                                    id="expansion"
-                                    type="checkbox"
-                                    value="true"
-                                    checked={expansion}
-                                    onChange={() => setExpansion(!expansion)}
-                                /> <label htmlFor="expansion">Expansion</label>
-                            </div>
+                                    {/* Remaster */}
+                                    <SearchCheckbox
+                                        checkbox={remaster}
+                                        setter={() => setRemaster(!remaster)}
+                                        checkboxName="remaster"
+                                        displayName="Remaster"
+                                    />
 
-                            {/*<div>
-                                <input
-                                    name="standalone_expansion"
-                                    id="standalone_expansion"
-                                    type="checkbox"
-                                    value="true"
-                                    checked={standaloneExpansion}
-                                    onChange={() => setStandaloneExpansion(!standaloneExpansion)}
-                                /> <label htmlFor="standalone_expansion">Standalone Expansion</label>
-                            </div>*/}
+                                    {/* Expanded Game */}
+                                    <SearchCheckbox
+                                        checkbox={expanded}
+                                        setter={() => setExpanded(!expanded)}
+                                        checkboxName="expanded_game"
+                                        displayName="Expanded Game"
+                                    />
 
-                            {/* Standalone Expansion */}
-                            <SearchCheckbox
-                                checkbox={standaloneExpansion}
-                                setter={() => setStandaloneExpansion(!standaloneExpansion)}
-                                checkboxName="standalone_expansion"
-                                displayName="Standalone Expansion"
-                            />
+                                    {/* Port */}
+                                    <SearchCheckbox
+                                        checkbox={port}
+                                        setter={() => setPort(!port)}
+                                        checkboxName="port"
+                                        displayName="Port"
+                                    />
 
-                            {/*<div>
-                                <input
-                                    name="dlc"
-                                    id="dlc"
-                                    type="checkbox"
-                                    value="true"
-                                    checked={dlc}
-                                    onChange={() => setDlc(!dlc)}
-                                /> <label htmlFor="dlc">DLC</label>
-                            </div>*/}
+                                    {/* Expansion */}
+                                    <SearchCheckbox
+                                        checkbox={expansion}
+                                        setter={() => setExpansion(!expansion)}
+                                        checkboxName="expansion"
+                                        displayName="Expansion"
+                                    />
 
-                            {/* DLC */}
-                            <SearchCheckbox
-                                checkbox={dlc}
-                                setter={() => setDlc(!dlc)}
-                                checkboxName="dlc"
-                                displayName="DLC"
-                            />
-                        </div>
-                    </div>
+                                    {/* Standalone Expansion */}
+                                    <SearchCheckbox
+                                        checkbox={standaloneExpansion}
+                                        setter={() => setStandaloneExpansion(!standaloneExpansion)}
+                                        checkboxName="standalone_expansion"
+                                        displayName="Standalone Expansion"
+                                    />
 
-                    <div className="mt-4 mb-4 flex flex-col md:flex-row justify-evenly">
-                        <div className="md:mr-4">
-                            <h3 className="text-black form-sub-header">
-                                Filter by Genre
-                            </h3>
+                                    {/* DLC */}
+                                    <SearchCheckbox
+                                        checkbox={dlc}
+                                        setter={() => setDlc(!dlc)}
+                                        checkboxName="dlc"
+                                        displayName="DLC"
+                                    />
+                                </AccordionContent>
+                            </AccordionItem>
 
-                            {/* Adventure */}
-                            <SearchCheckbox
-                                checkbox={adventure}
-                                setter={() => setAdventure(!adventure)}
-                                checkboxName="adventure"
-                                displayName="Adventure"
-                            />
+                            <AccordionItem value="item-3">
+                                <AccordionTrigger>
+                                    Filter by Genre
+                                </AccordionTrigger>
+                                <AccordionContent>
+                                    {/*<h3 className="text-black form-sub-header">
+                                        Filter by Genre
+                                    </h3>*/}
 
-                            {/* Arcade */}
-                            <SearchCheckbox
-                                checkbox={arcade}
-                                setter={() => setArcade(!arcade)}
-                                checkboxName="arcade"
-                                displayName="Arcade"
-                            />
+                                    <CheckboxButton
+                                        setter={handleCheckboxes}
+                                        setters={[
+                                            setAdventure,
+                                            setArcade,
+                                            setCard,
+                                            setFighting,
+                                            setHackAndSlash,
+                                            setIndie,
+                                            setMoba,
+                                            setMusic,
+                                            setPlatform,
+                                            setPointAndClick,
+                                            setPuzzle,
+                                            setQuiz,
+                                            setRacing,
+                                            setRts,
+                                            setRpg,
+                                            setSimulator,
+                                            setShooter,
+                                            setSports,
+                                            setStrategy,
+                                            setTactical,
+                                            setTbs,
+                                            setVisualNovel
+                                        ]}
+                                    />
 
-                            {/* Card & Board Game */}
-                            <SearchCheckbox
-                                checkbox={card}
-                                setter={() => setCard(!card)}
-                                checkboxName="card"
-                                displayName="Card/Board"
-                            />
+                                    {/* Adventure */}
+                                    <SearchCheckbox
+                                        checkbox={adventure}
+                                        setter={() => setAdventure(!adventure)}
+                                        checkboxName="adventure"
+                                        displayName="Adventure"
+                                    />
 
-                            {/* Fighting */}
-                            <SearchCheckbox
-                                checkbox={fighting}
-                                setter={() => setFighting(!fighting)}
-                                checkboxName="fighting"
-                                displayName="Fighting"
-                            />
+                                    {/* Arcade */}
+                                    <SearchCheckbox
+                                        checkbox={arcade}
+                                        setter={() => setArcade(!arcade)}
+                                        checkboxName="arcade"
+                                        displayName="Arcade"
+                                    />
 
-                            {/* Hack-and-Slash/Beat-em-up */}
-                            <SearchCheckbox
-                                checkbox={hackAndSlash}
-                                setter={() => setHackAndSlash(!hackAndSlash)}
-                                checkboxName="hack_and_slash"
-                                displayName="Hack-and-Slash/Beat-em-up"
-                            />
+                                    {/* Card & Board Game */}
+                                    <SearchCheckbox
+                                        checkbox={card}
+                                        setter={() => setCard(!card)}
+                                        checkboxName="card"
+                                        displayName="Card/Board"
+                                    />
 
-                            {/* Indie */}
-                            <SearchCheckbox
-                                checkbox={indie}
-                                setter={() => setIndie(!indie)}
-                                checkboxName="indie"
-                                displayName="Indie"
-                            />
+                                    {/* Fighting */}
+                                    <SearchCheckbox
+                                        checkbox={fighting}
+                                        setter={() => setFighting(!fighting)}
+                                        checkboxName="fighting"
+                                        displayName="Fighting"
+                                    />
 
-                            {/* MOBA */}
-                            <SearchCheckbox
-                                checkbox={moba}
-                                setter={() => setMoba(!moba)}
-                                checkboxName="moba"
-                                displayName="MOBA"
-                            />
+                                    {/* Hack-and-Slash/Beat-em-up */}
+                                    <SearchCheckbox
+                                        checkbox={hackAndSlash}
+                                        setter={() => setHackAndSlash(!hackAndSlash)}
+                                        checkboxName="hack_and_slash"
+                                        displayName="Hack-and-Slash/Beat-em-up"
+                                    />
 
-                            {/* Music */}
-                            <SearchCheckbox
-                                checkbox={music}
-                                setter={() => setMusic(!music)}
-                                checkboxName="music"
-                                displayName="Music"
-                            />
+                                    {/* Indie */}
+                                    <SearchCheckbox
+                                        checkbox={indie}
+                                        setter={() => setIndie(!indie)}
+                                        checkboxName="indie"
+                                        displayName="Indie"
+                                    />
 
-                            {/* Pinball */}
-                            {/*<SearchCheckbox
-                                checkbox={pinball}
-                                setter={() => setPinball(!pinball)}
-                                checkboxName="pinball"
-                                displayName="pinball"
-                            />*/}
+                                    {/* MOBA */}
+                                    <SearchCheckbox
+                                        checkbox={moba}
+                                        setter={() => setMoba(!moba)}
+                                        checkboxName="moba"
+                                        displayName="MOBA"
+                                    />
 
-                            {/* Platform */}
-                            <SearchCheckbox
-                                checkbox={platform}
-                                setter={() => setPlatform(!platform)}
-                                checkboxName="platform"
-                                displayName="Platform"
-                            />
+                                    {/* Music */}
+                                    <SearchCheckbox
+                                        checkbox={music}
+                                        setter={() => setMusic(!music)}
+                                        checkboxName="music"
+                                        displayName="Music"
+                                    />
 
-                            {/* Point-and-Click */}
-                            <SearchCheckbox
-                                checkbox={pointAndClick}
-                                setter={() => setPointAndClick(!pointAndClick)}
-                                checkboxName="point_and_click"
-                                displayName="Point-and-Click"
-                            />
+                                    {/* Pinball */}
+                                    {/*<SearchCheckbox
+                                        checkbox={pinball}
+                                        setter={() => setPinball(!pinball)}
+                                        checkboxName="pinball"
+                                        displayName="pinball"
+                                    />*/}
 
-                            {/* Puzzle */}
-                            <SearchCheckbox
-                                checkbox={puzzle}
-                                setter={() => setPuzzle(!puzzle)}
-                                checkboxName="puzzle"
-                                displayName="Puzzle"
-                            />
+                                    {/* Platform */}
+                                    <SearchCheckbox
+                                        checkbox={platform}
+                                        setter={() => setPlatform(!platform)}
+                                        checkboxName="platform"
+                                        displayName="Platform"
+                                    />
 
-                            {/* Quiz/Trivia */}
-                            <SearchCheckbox
-                                checkbox={quiz}
-                                setter={() => setQuiz(!quiz)}
-                                checkboxName="quiz"
-                                displayName="Quiz/Trivia"
-                            />
+                                    {/* Point-and-Click */}
+                                    <SearchCheckbox
+                                        checkbox={pointAndClick}
+                                        setter={() => setPointAndClick(!pointAndClick)}
+                                        checkboxName="point_and_click"
+                                        displayName="Point-and-Click"
+                                    />
 
-                            {/* Racing */}
-                            <SearchCheckbox
-                                checkbox={racing}
-                                setter={() => setRacing(!racing)}
-                                checkboxName="racing"
-                                displayName="Racing"
-                            />
+                                    {/* Puzzle */}
+                                    <SearchCheckbox
+                                        checkbox={puzzle}
+                                        setter={() => setPuzzle(!puzzle)}
+                                        checkboxName="puzzle"
+                                        displayName="Puzzle"
+                                    />
 
-                            {/* Real-Time Strategy (RTS) */}
-                            <SearchCheckbox
-                                checkbox={rts}
-                                setter={() => setRts(!rts)}
-                                checkboxName="rts"
-                                displayName="Real-Time Strategy (RTS)"
-                            />
+                                    {/* Quiz/Trivia */}
+                                    <SearchCheckbox
+                                        checkbox={quiz}
+                                        setter={() => setQuiz(!quiz)}
+                                        checkboxName="quiz"
+                                        displayName="Quiz/Trivia"
+                                    />
 
-                            {/* Role-Playing (RPG) */}
-                            <SearchCheckbox
-                                checkbox={rpg}
-                                setter={() => setRpg(!rpg)}
-                                checkboxName="rpg"
-                                displayName="Role-Playing (RPG)"
-                            />
+                                    {/* Racing */}
+                                    <SearchCheckbox
+                                        checkbox={racing}
+                                        setter={() => setRacing(!racing)}
+                                        checkboxName="racing"
+                                        displayName="Racing"
+                                    />
 
-                            {/* Simulator */}
-                            <SearchCheckbox
-                                checkbox={simulator}
-                                setter={() => setSimulator(!simulator)}
-                                checkboxName="simulator"
-                                displayName="Simulator"
-                            />
+                                    {/* Real-Time Strategy (RTS) */}
+                                    <SearchCheckbox
+                                        checkbox={rts}
+                                        setter={() => setRts(!rts)}
+                                        checkboxName="rts"
+                                        displayName="Real-Time Strategy (RTS)"
+                                    />
 
-                            {/* Shooter */}
-                            <SearchCheckbox
-                                checkbox={shooter}
-                                setter={() => setShooter(!shooter)}
-                                checkboxName="shooter"
-                                displayName="Shooter"
-                            />
+                                    {/* Role-Playing (RPG) */}
+                                    <SearchCheckbox
+                                        checkbox={rpg}
+                                        setter={() => setRpg(!rpg)}
+                                        checkboxName="rpg"
+                                        displayName="Role-Playing (RPG)"
+                                    />
 
-                            {/* Sports */}
-                            <SearchCheckbox
-                                checkbox={sports}
-                                setter={() => setSports(!sports)}
-                                checkboxName="sports"
-                                displayName="Sports"
-                            />
+                                    {/* Simulator */}
+                                    <SearchCheckbox
+                                        checkbox={simulator}
+                                        setter={() => setSimulator(!simulator)}
+                                        checkboxName="simulator"
+                                        displayName="Simulator"
+                                    />
 
-                            {/* Strategy */}
-                            <SearchCheckbox
-                                checkbox={strategy}
-                                setter={() => setStrategy(!strategy)}
-                                checkboxName="strategy"
-                                displayName="Strategy"
-                            />
+                                    {/* Shooter */}
+                                    <SearchCheckbox
+                                        checkbox={shooter}
+                                        setter={() => setShooter(!shooter)}
+                                        checkboxName="shooter"
+                                        displayName="Shooter"
+                                    />
 
-                            {/* Tactical */}
-                            <SearchCheckbox
-                                checkbox={tactical}
-                                setter={() => setTactical(!tactical)}
-                                checkboxName="tactical"
-                                displayName="Tactical"
-                            />
+                                    {/* Sports */}
+                                    <SearchCheckbox
+                                        checkbox={sports}
+                                        setter={() => setSports(!sports)}
+                                        checkboxName="sports"
+                                        displayName="Sports"
+                                    />
 
-                            {/* Turn-Based Strategy (TBS) */}
-                            <SearchCheckbox
-                                checkbox={tbs}
-                                setter={() => setTbs(!tbs)}
-                                checkboxName="tbs"
-                                displayName="Turn-Based Strategy (TBS)"
-                            />
+                                    {/* Strategy */}
+                                    <SearchCheckbox
+                                        checkbox={strategy}
+                                        setter={() => setStrategy(!strategy)}
+                                        checkboxName="strategy"
+                                        displayName="Strategy"
+                                    />
 
-                            {/* Visual Novel */}
-                            <SearchCheckbox
-                                checkbox={visualNovel}
-                                setter={() => setVisualNovel(!visualNovel)}
-                                checkboxName="visual_novel"
-                                displayName="Visual Novel"
-                            />
-                        </div>
+                                    {/* Tactical */}
+                                    <SearchCheckbox
+                                        checkbox={tactical}
+                                        setter={() => setTactical(!tactical)}
+                                        checkboxName="tactical"
+                                        displayName="Tactical"
+                                    />
 
-                        <div className="md:ml-4">
-                            <h3 className="text-black form-sub-header">
-                                Filter by Game Mode
-                            </h3>
+                                    {/* Turn-Based Strategy (TBS) */}
+                                    <SearchCheckbox
+                                        checkbox={tbs}
+                                        setter={() => setTbs(!tbs)}
+                                        checkboxName="tbs"
+                                        displayName="Turn-Based Strategy (TBS)"
+                                    />
 
-                            {/* Single Player */}
-                            <SearchCheckbox 
-                                checkbox={singlePlayer}
-                                setter={() => setSinglePlayer(!singlePlayer)}
-                                checkboxName="single_player"
-                                displayName="Single Player"
-                            />
+                                    {/* Visual Novel */}
+                                    <SearchCheckbox
+                                        checkbox={visualNovel}
+                                        setter={() => setVisualNovel(!visualNovel)}
+                                        checkboxName="visual_novel"
+                                        displayName="Visual Novel"
+                                    />
+                                </AccordionContent>
+                            </AccordionItem>
 
-                            {/* Multiplayer */}
-                            <SearchCheckbox
-                                checkbox={multiplayer}
-                                setter={() => setMultiplayer(!multiplayer)}
-                                checkboxName="multiplayer"
-                                displayName="Multiplayer"
-                            />
+                            <AccordionItem value="item-4">
+                                <AccordionTrigger>
+                                    Filter by Game Mode
+                                </AccordionTrigger>
+                                <AccordionContent>
+                                    {/*<h3 className="text-black form-sub-header">
+                                        Filter by Game Mode
+                                    </h3>*/}
 
-                            {/* Co-Op */}
-                            <SearchCheckbox
-                                checkbox={coop}
-                                setter={() => setCoop(!coop)}
-                                checkboxName="co_op"
-                                displayName="Co-Op"
-                            />
+                                    <CheckboxButton
+                                        setter={handleCheckboxes}
+                                        setters={[
+                                            setSinglePlayer,
+                                            setMultiplayer,
+                                            setCoop,
+                                            setSplitScreen,
+                                            setMmo,
+                                            setBattleRoyale
+                                        ]}
+                                    />
 
-                            {/* Split-Screen */}
-                            <SearchCheckbox
-                                checkbox={splitScreen}
-                                setter={() => setSplitScreen(!splitScreen)}
-                                checkboxName="split_screen"
-                                displayName="Split-Screen"
-                            />
+                                    {/* Single Player */}
+                                    <SearchCheckbox 
+                                        checkbox={singlePlayer}
+                                        setter={() => setSinglePlayer(!singlePlayer)}
+                                        checkboxName="single_player"
+                                        displayName="Single Player"
+                                    />
 
-                            {/* MMO */}
-                            <SearchCheckbox
-                                checkbox={mmo}
-                                setter={() => setMmo(!mmo)}
-                                checkboxName="mmo"
-                                displayName="MMO"
-                            />
+                                    {/* Multiplayer */}
+                                    <SearchCheckbox
+                                        checkbox={multiplayer}
+                                        setter={() => setMultiplayer(!multiplayer)}
+                                        checkboxName="multiplayer"
+                                        displayName="Multiplayer"
+                                    />
 
-                            {/* Battle Royale */}
-                            <SearchCheckbox
-                                checkbox={battleRoyale}
-                                setter={() => setBattleRoyale(!battleRoyale)}
-                                checkboxName="battle_royale"
-                                displayName="Battle Royale"
-                            />
+                                    {/* Co-Op */}
+                                    <SearchCheckbox
+                                        checkbox={coop}
+                                        setter={() => setCoop(!coop)}
+                                        checkboxName="co_op"
+                                        displayName="Co-Op"
+                                    />
 
-                        </div>
+                                    {/* Split-Screen */}
+                                    <SearchCheckbox
+                                        checkbox={splitScreen}
+                                        setter={() => setSplitScreen(!splitScreen)}
+                                        checkboxName="split_screen"
+                                        displayName="Split-Screen"
+                                    />
+
+                                    {/* MMO */}
+                                    <SearchCheckbox
+                                        checkbox={mmo}
+                                        setter={() => setMmo(!mmo)}
+                                        checkboxName="mmo"
+                                        displayName="MMO"
+                                    />
+
+                                    {/* Battle Royale */}
+                                    <SearchCheckbox
+                                        checkbox={battleRoyale}
+                                        setter={() => setBattleRoyale(!battleRoyale)}
+                                        checkboxName="battle_royale"
+                                        displayName="Battle Royale"
+                                    />
+                                </AccordionContent>
+                            </AccordionItem>
+                        </Accordion>
                     </div>
 
                     <div>
-                        <label htmlFor="limit" className="text-black block">Page Limit</label>
+                        <label htmlFor="limit" className="block mb-1">Page Limit</label>
                         <select
                             name="limit"
                             id="limit"
                             defaultValue={limit ? limit : "12"}
                             onChange={(e) => setLimit(Number(e.target.value))}
-                            className="form-select"
+                            className="form-select bg-formFieldBg text-formFieldText" // Formerly had bg-secondaryBg clas
                         >
                             <option value="6">6</option>
                             <option value="8">8</option>
@@ -643,10 +720,16 @@ export default function SearchForm() {
 
                     <div className="flex flex-col md:flex-row">
                         
-                        <div className="md:mr-2">
+                        <div className="mb-2 md:mb-0 md:mr-2">
                             <button 
                                 type="submit"
-                                className="form-submit-btn"
+                                className="
+                                    form-submit-btn 
+                                    bg-button 
+                                    active:bg-buttonDarkened 
+                                    hover:bg-buttonDarkened 
+                                    disabled:bg-buttonLightened
+                                "
                             >
                                 Search
                             </button>
@@ -655,7 +738,9 @@ export default function SearchForm() {
                         <div className="md:ml-2">
                             <button
                                 type="button"
-                                className="bg-gray-500 text-white p-2 rounded-sm cursor-pointer hover:bg-gray-600"
+
+                                // Formerly had bg-gray-500, text-white, and hover:bg-gray-600 classes
+                                className="bg-resetButton hover:bg-resetButtonDarkened text-resetButtonText p-2 rounded-sm cursor-pointer"
                                 onClick={() => resetForm()}
                             >
                                 Reset
