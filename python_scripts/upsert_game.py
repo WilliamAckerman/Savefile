@@ -31,7 +31,7 @@ request_timeout = (int(600), int(600))
 database = client.get_database(DATABASE) # Select the MongoDB database to use
 games = database.get_collection(GAMES_COLLECTION) # Select the database collection
 
-game_ids = [90101]
+game_ids = [369840,285987,361826,347971,144260]
 
 async def get_popular_games(popularity_type):
     game_id_array = []
@@ -279,8 +279,16 @@ async def assign_addons(header, key, data_object, game_object):
     if (data_object.get(key)):
         addon_array = []
         for addon in data_object[key]:
-            addon_object = await append_add_on(addon)
-            addon_array.append(addon_object)
+
+            game_addon = await append_add_on(addon)
+            if (game_addon != None):
+                addon_array.append(game_addon)
+
+                #addon_object = await append_add_on(addon)
+                #addon_array.append(addon_object)
+
+            #addon_object = await append_add_on(addon)
+            #addon_array.append(addon_object)
     
         addon_array.sort(key=lambda addon: addon['first_release_date'] if addon.get('first_release_date') else math.inf)
 
@@ -1623,7 +1631,12 @@ async def upsert_game(IGDB_game_id, skip_if_updated = True):
             parent_count = await games.count_documents({'IGDB_id': IGDB_game_data['parent_game']})
             if (parent_count > 0):
                 #game_object['parent_game'] = IGDB_game_data['parent_game']
-                game_object['parent_game'] = await append_add_on(IGDB_game_data['parent_game'])
+
+                #game_object['parent_game'] = await append_add_on(IGDB_game_data['parent_game'])
+
+                parent_game = await append_add_on(IGDB_game_data['parent_game'])
+                if (parent_game != None):
+                    game_object['parent_game'] = parent_game
 
                 #await add_title_suffix(IGDB_game_id, IGDB_game_data, game_object)
                 await add_title_suffix(IGDB_game_data['parent_game'], IGDB_game_data, game_object)
