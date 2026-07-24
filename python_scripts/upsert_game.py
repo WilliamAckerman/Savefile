@@ -349,7 +349,10 @@ async def append_add_on(IGDB_id):
         # Game Type
         await add_game_type(IGDB_game_data, IGDB_id, addon_object)
 
+        # First Release Date
         if (IGDB_game_data.get('first_release_date')):
+
+            # First release date is used to order addons from earliest release to latest release
             addon_object['first_release_date'] = IGDB_game_data['first_release_date']
 
         if (IGDB_game_data.get('parent_game')):
