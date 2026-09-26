@@ -31,7 +31,7 @@ request_timeout = (int(600), int(600))
 database = client.get_database(DATABASE) # Select the MongoDB database to use
 games = database.get_collection(GAMES_COLLECTION) # Select the database collection
 
-game_ids = [369840,285987,361826,347971,144260]
+game_ids = []
 
 async def get_popular_games(popularity_type):
     game_id_array = []
@@ -459,6 +459,14 @@ async def upsert_game(IGDB_game_id, skip_if_updated = True):
         else:
             raise SystemExit(f"No game was found for IGDB id of {IGDB_game_id}.")
         #get_IGDB_id(IGDB_game_data, game_object, IGDB_game_id)
+
+        # See if checksum was updated
+        """if (IGDB_game_data.get('checksum')):
+            game_checksum = IGDB_game_data['checksum']
+            find_query = await games.find_one({'checksum': game_checksum, 'IGDB_id': IGDB_game_data['id']})
+            print(str(find_query))
+            if (find_query.get('checksum') and find_query['checksum'] == game_checksum):
+                raise SystemExit("test")"""
         
         # Title
         get_title(IGDB_game_data, game_object, IGDB_game_id)
