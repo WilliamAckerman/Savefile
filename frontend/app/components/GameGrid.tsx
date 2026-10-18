@@ -17,6 +17,7 @@ export default function GameGrid(props: GameGridProps) {
         grid 
         grid-cols-2 
         lg:grid-cols-4 
+        xl:grid-cols-6
         gap-1 
         mx-auto 
         p-0

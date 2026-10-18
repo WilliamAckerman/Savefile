@@ -12,29 +12,20 @@ getGameSearchResultsRouter.use(express.json());
 
 function checkIfTrue(field: string) {
     return field === 'true'
-    /*if (field === 'true') {
-        return true;
-    } else {
-        return false;
-    }*/
 }
 
 function appendToArray(array: number[], field: boolean, id: number) {
-    if (field === true) {
-        array.push(id);
-    }
+    if (field === true) {array.push(id);}
 }
 
 getGameSearchResultsRouter.get('/', async (_req: Request, res: Response) => {
-    //console.log(_req.query);
-
-    const search: string = _req.query.search ? String(_req.query.search) : "";
+    const search: string = _req.query.search ? String(_req.query.search).trim() : "";
     const page = Number(_req.query.page) || 1;
     const limit = Number(_req.query.limit) || 12;
     const skip = (page - 1) * limit;
 
     // Game Types
-    const standard: boolean = checkIfTrue(String(_req.query.standard));
+    const standard: boolean = checkIfTrue(String(_req.query.standard)); // ID: 0
     const port: boolean = checkIfTrue(String(_req.query.port)); // ID: 11
     const expanded_game: boolean = checkIfTrue(String(_req.query.expanded_game)); // ID: 10
     const dlc: boolean = checkIfTrue(String(_req.query.dlc)); // ID: 3
@@ -89,13 +80,7 @@ getGameSearchResultsRouter.get('/', async (_req: Request, res: Response) => {
     const queryArray = [];
     const gameTypes: number[] = [];
 
-    // Creating the game type filter
-    const typeFilterArray = [];
-
-    if (standard == true) {
-        typeFilterArray.push({ 'game_type.IGDB_game_type_id': { $exists: false }});
-    }
-
+    appendToArray(gameTypes, standard, 0)
     appendToArray(gameTypes, dlc, 1);
     appendToArray(gameTypes, expanded_game, 10);
     appendToArray(gameTypes, port, 11);
@@ -104,24 +89,7 @@ getGameSearchResultsRouter.get('/', async (_req: Request, res: Response) => {
     appendToArray(gameTypes, expansion, 2);
     appendToArray(gameTypes, standalone_expansion, 4);
 
-    //console.log("Game types")
-    //console.log(gameTypes)
-
-    if (gameTypes.length > 0) {
-        typeFilterArray.push({ 'game_type.IGDB_game_type_id': { $in: gameTypes }});
-    }
-
-    // Only apply $or if typeFilterArray's length is greater than 1
-    if (typeFilterArray.length > 1) {
-        queryArray.push({ "$or": typeFilterArray });
-    } else if (typeFilterArray.length == 1) {
-        queryArray.push(typeFilterArray[0]);
-    }
-
-    //console.log("Game types")
-    //console.log(gameTypes)
-    //console.log("Query array")
-    //console.log(queryArray)
+    if (gameTypes.length > 0) queryArray.push({'game_type.IGDB_game_type_id': {$in: gameTypes}});
 
     // Platforms
     const platforms: number[] = [];
@@ -135,9 +103,6 @@ getGameSearchResultsRouter.get('/', async (_req: Request, res: Response) => {
     appendToArray(platforms, windows, 6); // Windows
     appendToArray(platforms, mac, 14); // Mac
     appendToArray(platforms, linux, 3); // Linux
-
-    //console.log("Platforms")
-    //console.log(platforms)
 
     // Genres
     const genres: number[] = [];
@@ -176,42 +141,17 @@ getGameSearchResultsRouter.get('/', async (_req: Request, res: Response) => {
     appendToArray(gameModes, battleRoyale, 6);
 
     const orArray = [];
-    if (gameTypes.length > 0) {
-        orArray.push({ 'game_type.IGDB_game_type_id': { $in: gameTypes }});
-    }
-    if (standard === true) {
-        orArray.push({ 'game_type.IGDB_game_type_id': { $exists: false }});
-    }
-    //console.log("orArray")
-    //console.log(orArray)
+    if (gameTypes.length > 0) orArray.push({ 'game_type.IGDB_game_type_id': { $in: gameTypes }});
 
-    let conditionObject;
-    if (orArray.length == 1) {
-        conditionObject = orArray[0];
-    } else if (orArray.length > 0) {
-        conditionObject = { "$or": orArray };
-    } else {
-        conditionObject = {};
-    }
+    const findArray = [];
+    
+    if (gameTypes.length > 0) findArray.push({ "game_type.IGDB_game_type_id": { "$in": gameTypes }});
+    if (platforms.length > 0) findArray.push({ "platforms.IGDB_platform_id": { "$in": platforms }});
+    if (genres.length > 0) findArray.push({ "genres.IGDB_genre_id": { "$in": genres } });
+    if (gameModes.length > 0) findArray.push({ "game_modes.IGDB_game_mode_id": { "$in": gameModes }});
 
     let queryObject;
-    const findArray = [];
-    if (orArray.length > 0) {
-        findArray.push(conditionObject);
-    }
-
-    if (platforms.length > 0) {
-        findArray.push({ "platforms.IGDB_platform_id": { "$in": platforms }});
-    }
-
-    if (genres.length > 0) {
-        findArray.push({ "genres.IGDB_genre_id": { "$in": genres } });
-    }
-
-    if (gameModes.length > 0) {
-        findArray.push({ "game_modes.IGDB_game_mode_id": { "$in": gameModes }});
-    }
-
+    
     // $and is only applied if filtering by two
     if (findArray.length > 1) {
         queryObject = { "$and": findArray };
@@ -228,8 +168,8 @@ getGameSearchResultsRouter.get('/', async (_req: Request, res: Response) => {
         pipeline.push({
             "$search": {
                 index: GAME_SEARCH_INDEX, // The index provided must be a search index; normal indexes won't work
-                "text": {
-                    "query": search,
+                "wildcard": {
+                    "query": `*${search}*`,
                     "path": ["title", "alternative_titles.title"] // Which fields to search
                 },
                 count: {
@@ -240,9 +180,7 @@ getGameSearchResultsRouter.get('/', async (_req: Request, res: Response) => {
     }
 
     // Only add the pipeline object if filtering is specified
-    if (findArray.length >= 1) {
-        pipeline.push({ "$match": queryObject });
-    }
+    if (findArray.length >= 1) pipeline.push({ "$match": queryObject });
 
     const projectObject = {
         _id: 1,
@@ -266,9 +204,7 @@ getGameSearchResultsRouter.get('/', async (_req: Request, res: Response) => {
     //pipeline.push({ $skip: skip });
 
     // Add the project field
-    pipeline.push({
-        "$project": projectObject
-    });
+    pipeline.push({"$project": projectObject});
     
     pipeline.push({
         $facet: {
@@ -279,45 +215,11 @@ getGameSearchResultsRouter.get('/', async (_req: Request, res: Response) => {
         }
     })
 
-    //console.log(pipeline)
-    //console.log(JSON.stringify(pipeline))
-
     try {
         const gamesCollection = db.collection(process.env.MONGODB_GAME_COLLECTION_NAME!)
-
         let games; // Stores the games returned
-        //let gameCount;
-        //console.log(search)
-
-        /*if (search.trim() == "") {
-            console.log("No search")
-            games = (
-                await gamesCollection?.find(queryObject)
-                .limit(limit)
-                .skip(skip)
-                .project(projectObject)
-                .toArray()
-            ) as Game[]
-
-            gameCount = await gamesCollection.countDocuments(queryObject);
-            /*res.status(200).json({
-                success: true,
-                message: 'No search provided.'
-            })*//*
-        } else {*/
-            //console.log("Search provided")
-            games = (
-                await gamesCollection.aggregate(pipeline).toArray()
-            ) //as Game[];
-
-            //gameCount = games.length;
-
-            //console.log("Games")
-            //console.log(JSON.stringify(games))
-
-            //console.log("Game count")
-            //console.log(gameCount)
-        //}
+        
+        games = (await gamesCollection.aggregate(pipeline).toArray()) //as Game[];
         
         let gameCount: number = 0;
         let pageCount: number = 0;
@@ -328,22 +230,10 @@ getGameSearchResultsRouter.get('/', async (_req: Request, res: Response) => {
         }
 
         //const pageCount: number = Math.ceil(Number(gameCount) / limit);
-
-        //const pageCount: number = Math.ceil(games[0]?.metadata[0].totalCount / limit);
-
-        /*res.status(200).json({
-            success: true,
-            games: games,
-            gameCount: gameCount,
-            pageCount: pageCount
-        });*/
         res.status(200).json({
             success: true,
             games: games[0]?.data,
-
-            //gameCount: games[0]?.metadata[0].totalCount,
             gameCount: gameCount,
-
             pageCount: pageCount
         });
     } catch (error) {

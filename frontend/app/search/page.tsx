@@ -112,13 +112,12 @@ export default async function Search(
                     <hr className="text-primaryText" />
                 </div>*/}
 
-                <div className="flex flex-col lg:flex-row">
-                    <div className="flex items-center lg:items-start lg:w-[40%]">
-                        <SearchForm 
-                        />
+                <div className="flex flex-col"> {/* Formerly had lg:flex-row class */}
+                    <div className="flex items-center"> {/* Formerly had lg:items-start and lg:w-[40%] classes */}
+                        <SearchForm />
                     </div>
 
-                    <div className="flex items-center lg:items-start lg:w-[60%]">
+                    <div className="flex items-center"> {/* Formerly had lg:items-start and lg:w-[60%] classes */}
                         <Suspense fallback={/*<p>Loading search results...</p>*/<SearchResultsSkeleton />}>
                         {
                             gameData?.success == true ?

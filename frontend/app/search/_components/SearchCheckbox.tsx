@@ -1,3 +1,6 @@
+import { Checkbox } from "@/components/ui/checkbox"
+import { Field, FieldLabel } from "@/components/ui/field"
+
 interface SearchCheckboxProps {
     checkbox: boolean
     setter: (checkbox: boolean) => void
@@ -11,7 +14,19 @@ export default function SearchCheckbox(props: SearchCheckboxProps) {
     const displayName = props.displayName;
 
     return (
-        <div>
+        <Field orientation="horizontal">
+            <Checkbox
+                name={checkboxName}
+                id={checkboxName}
+                value="true"
+                checked={checkbox}
+                onCheckedChange={() => setCheckbox(!checkbox)}
+            />
+            <FieldLabel htmlFor={checkboxName}>
+                {displayName}
+            </FieldLabel>
+
+        {/*<div>
             <label>
                 <input
                     name={checkboxName}
@@ -20,8 +35,9 @@ export default function SearchCheckbox(props: SearchCheckboxProps) {
                     value="true"
                     checked={checkbox}
                     onChange={() => setCheckbox(!checkbox)}
-                /> {/*<label htmlFor={checkboxName}>*/}{displayName}{/*</label>*/}
-            </label>
-        </div>
+                /> {/*<label htmlFor={checkboxName}>*/}{/*displayName}{/*</label>*/}
+            {/*</label>
+        </div>*/}
+        </Field>
     )
 }

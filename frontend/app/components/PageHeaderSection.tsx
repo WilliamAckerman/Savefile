@@ -2,6 +2,14 @@ import Link from 'next/link'
 import '@/app/styles/General.css';
 
 import type Breadcrumb from '../lib/types/breadcrumb'
+import {
+    Breadcrumb as BreadcrumbComponent,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
+    BreadcrumbPage,
+    BreadcrumbSeparator
+} from "@/components/ui/breadcrumb";
 
 interface PageHeaderProps {
     current_page: string
@@ -17,23 +25,29 @@ export const PageHeaderSection = (props: PageHeaderProps) => {
             <h1 className="main-header text-primaryText font-semibold">{props.current_page}</h1>
 
             {/* Breadcrumb Section */}
-            <div className="pl-4 pb-4 ml-4">
-                <nav>
+            <BreadcrumbComponent className="pl-4 pb-4 ml-4">
+                <BreadcrumbList>
                     {
                         breadcrumbs.map((breadcrumb) => {
                             return (
-                                <span key={breadcrumb.page}>
-                                    <Link href={`${breadcrumb.link}`} className="text-primaryLink underline hover:no-underline">
+                                <BreadcrumbItem key={breadcrumb.page}>
+                                    <BreadcrumbLink href={`${breadcrumb.link}`} className="text-primaryLink underline hover:no-underline hover:text-primaryLink">
                                         {breadcrumb.page}
-                                    </Link> <span className="text-primaryText">{">"}</span>
-                                </span>
+                                    </BreadcrumbLink>
+                                </BreadcrumbItem>
                             )
                         })
-                    } {
-                        <span className="text-primaryText">{props.current_page}</span>
+                    } 
+                    <BreadcrumbSeparator className="text-primaryText">{">"}</BreadcrumbSeparator>
+                    {
+                        <BreadcrumbItem>
+                            <BreadcrumbPage className="text-primaryText">
+                                {props.current_page}
+                            </BreadcrumbPage>
+                        </BreadcrumbItem>
                     }
-                </nav>
-            </div>
+                </BreadcrumbList>
+            </BreadcrumbComponent>
 
             <hr className="text-primaryText" />
         </div>
